@@ -1,0 +1,82 @@
+{
+	"name": "super_ezviz",
+	"id": "super_ezviz",
+	"version": "1.0.4",
+	"description": "",
+	"_dp_type": "nativeplugin",
+	"_dp_nativeplugin": {
+		"android": {
+			"plugins": [
+				{
+					"type": "module",
+					"name": "super_ezviz",
+					"class": "cn.yoouu.uniplugin.super_ezviz.SuperModuleEzviz"
+				},
+				{
+					"type": "component",
+					"name": "UniOpenSDK",
+					"class": "com.uniapp.view.EzOpenSDKView"
+				}
+			],
+			"hooksClass": "cn.yoouu.uniplugin.super_ezviz.SuperModuleEzvizProxy",
+			"integrateType": "aar",
+			"dependencies": [
+				"androidx.appcompat:appcompat:1.1.0",
+				"io.github.ezviz-open:ezviz-sdk:5.12",
+				"com.squareup.okhttp3:okhttp:3.12.1",
+				"com.google.code.gson:gson:2.8.5",
+				"io.github.ezviz-open:videotalk:1.3.0",
+				"io.github.ezviz-open:streamctrl:1.3.0",
+				"com.alibaba:arouter-api:1.5.0",
+				"com.alibaba:arouter-compiler:1.2.2",
+				"org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.20-RC",
+				"androidx.multidex:multidex:2.0.1"
+			],
+			"compileOptions": {
+				"sourceCompatibility": "1.8",
+				"targetCompatibility": "1.8"
+			},
+			"abis": [
+				"armeabi-v7a",
+				"arm64-v8a",
+				"x86"
+			],
+			"minSdkVersion": "21",
+			"useAndroidX": true,
+			"permissions": [],
+			"parameters": {}
+		},
+		"ios": {
+			"plugins": [{
+				"type": "module",
+				"name": "super_ezviz",
+				"class": "UniOpenSDKModule"
+			},
+			{
+				"type": "component",
+				"name": "UniOpenSDK",
+				"class": "UniOpenSDKComponent"
+			}
+			],
+			"frameworks": [
+				"libsqlite3.0.tbd",
+				"CoreMedia.framework",
+				"AudioToolbox.framework",
+				"VideoToolbox.framework",
+				"GLKit.framework",
+				"OpenAL.framework",
+				"MobileCoreServices.framework",
+				"AVFoundation.framework",
+				"CoreTelephony.framework",
+				"SystemConfiguration.framework",
+				"libc++.tbd",
+				"libiconv.tbd",
+				"libbz2.tbd",
+				"libz.tbd"
+			],
+			"resources": ["com.hri.hpc.mobile.ios.player.metallib"],
+			"integrateType": "framework",
+			"deploymentTarget": "11.0"
+		}
+	}
+}
