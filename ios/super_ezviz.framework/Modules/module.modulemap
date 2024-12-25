@@ -1,0 +1,6 @@
+framework module super_ezviz {
+  umbrella header "super_ezviz.h"
+  export *
+
+  module * { export * }
+}
