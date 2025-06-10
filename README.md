@@ -93,3 +93,4 @@ videoPlayer.createPlayer(this.deviceSerial, this.channelNo, this.validCode, (res
 | 18  | ptzOption             | 云台操作      | command 方向，0：左，1：右，2：上，3：下<br>action 指令，START开始转动，STOP停止转动                                                                                   |                                |
 | 19  | changePlayBackSpeed   | 倍速回放      | speed 回放速度，1：1倍速，2：二倍速，3：0.5倍速，4：4倍速，8：8倍速，16：16倍速                                                                                           |                                |
 | 20  | getStreamFlow         | 获取流量数据    | callback 回调                                                                                                                                  | code<br>data 累计消耗流量            |
+| 21  | release               | 销毁播放器     | callback 回调                                                                                                                                  | res销毁结果                        |
