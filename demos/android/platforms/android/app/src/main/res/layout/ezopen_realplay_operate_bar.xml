@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ezopen_realplay_operate_bar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e0e0e0"
+    android:fadingEdge="none"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:id="@+id/realplay_operate_ly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- PTZ -->
+            <LinearLayout
+                android:id="@+id/realplay_ptz_btn_ly"
+                android:layout_width="@dimen/width_functional_widget"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/realplay_ptz_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/play_ptz_selector"
+                    android:onClick="onClick" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="7dp"
+                    android:text="@string/ptz"
+                    android:textColor="@color/common_sub_text"
+                    android:textSize="@dimen/realplay_text_size" />
+
+            </LinearLayout>
+
+            <!-- 对讲 -->
+            <LinearLayout
+                android:id="@+id/realplay_talk_btn_ly"
+                android:layout_width="@dimen/width_functional_widget"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/realplay_talk_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/play_talk_selector"
+                    android:onClick="onClick" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="7dp"
+                    android:text="@string/talk"
+                    android:textColor="@color/common_sub_text"
+                    android:textSize="@dimen/realplay_text_size" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- 截图 -->
+            <LinearLayout
+                android:id="@+id/realplay_previously_btn_ly"
+                android:layout_width="@dimen/width_functional_widget"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/realplay_previously_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/play_previously_selector"
+                    android:onClick="onClick" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="7dp"
+                    android:text="@string/capture"
+                    android:textColor="@color/common_sub_text"
+                    android:textSize="@dimen/realplay_text_size" />
+
+            </LinearLayout>
+
+            <!-- 录像 -->
+            <LinearLayout
+                android:id="@+id/realplay_video_container_ly"
+                android:layout_width="@dimen/width_functional_widget"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/realplay_video_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal">
+
+                    <ImageButton
+                        android:id="@+id/realplay_video_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/play_video_selector"
+                        android:onClick="onClick" />
+
+                    <ImageButton
+                        android:id="@+id/realplay_video_start_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/play_video_sel"
+                        android:onClick="onClick"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="7dp"
+                    android:text="@string/record"
+                    android:textColor="@color/common_sub_text"
+                    android:textSize="@dimen/realplay_text_size" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/realplay_operate_third_line_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- 云录制截图上传 -->
+            <LinearLayout
+                android:id="@+id/realplay_snapshot_upload_btn_ly"
+                android:layout_width="@dimen/width_functional_widget"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/realplay_snapshot_upload_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/play_previously_selector"
+                    android:onClick="onClick" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="7dp"
+                    android:text="@string/capture_upload"
+                    android:textColor="@color/common_sub_text"
+                    android:textSize="@dimen/realplay_text_size" />
+
+            </LinearLayout>
+
+            <!--  -->
+            <LinearLayout
+                android:layout_width="@dimen/width_functional_widget"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="invisible">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/play_talk_selector"
+                    android:onClick="onClick" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="7dp"
+                    android:text="@string/talk"
+                    android:textColor="@color/common_sub_text"
+                    android:textSize="@dimen/realplay_text_size" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</HorizontalScrollView>
