@@ -1,7 +1,7 @@
 {
 	"name": "super_ezviz",
 	"id": "super_ezviz",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "",
 	"_dp_type": "nativeplugin",
 	"_dp_nativeplugin": {
@@ -75,6 +75,11 @@
 				"libz.tbd"
 			],
 			"resources": ["com.hri.hpc.mobile.ios.player.metallib"],
+			"privacies": [
+				"NSPhotoLibraryUsageDescription",
+				"NSPhotoLibraryAddUsageDescription",
+				"NSMicrophoneUsageDescription"
+			],
 			"integrateType": "framework",
 			"deploymentTarget": "11.0"
 		}

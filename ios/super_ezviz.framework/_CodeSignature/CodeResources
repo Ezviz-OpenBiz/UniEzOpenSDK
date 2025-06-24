@@ -4,13 +4,17 @@
 <dict>
 	<key>files</key>
 	<dict>
+		<key>.DS_Store</key>
+		<data>
+		8EEX2mwQNLKzscyNO+QZvffGk98=
+		</data>
 		<key>Headers/super_ezviz.h</key>
 		<data>
 		mXBA35Rg0gtDoRtgAESOmC6z+KE=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		dMw8GmytGFUI59QZh9etO+DLdhk=
+		HyBY/W3jeI+YHobAGBZ9oabfKTc=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
