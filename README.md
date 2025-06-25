@@ -95,3 +95,58 @@ videoPlayer.createPlayer(this.deviceSerial, this.channelNo, this.validCode, (res
 | 20  | changePlayBackSpeed   | 倍速回放         | speed 回放速度，1：1倍速，2：二倍速，3：0.5倍速，4：4倍速，8：8倍速，16：16倍速                                                                                           |                                |
 | 21  | getStreamFlow         | 获取流量数据       | callback 回调                                                                                                                                  | code<br>data 累计消耗流量            |
 | 22  | release               | 销毁播放器        | callback 回调                                                                                                                                  | res销毁结果                        |
+
+## 4、消息回调
+
+插件提供回调事件，在播放、对讲、操作云台时返回对应的执行结果。
+
+在页面的适当的时机监听“onMessage”事件，插件会在执行完成后通过该全局事件回调结果。
+
+具体使用方式可以参考demos。
+
+若有更多回调事件需求，可以通过GitHub issues向我们反馈。
+
+```js
+globalEvent.addEventListener('onMessage', (e) => {
+	console.log("onMessage=" + JSON.stringify(e));
+	const messageKey = Object.keys(e)[0];
+	switch (messageKey) {
+		case 'handlePlaySuccess': // 播放成功
+			// ...
+			break;
+
+		case 'handlePlayFail': // 播放失败
+			// ...
+			break;
+
+		case 'handleTalkSuccess': // 对讲成功
+			// ...
+			break;
+
+		case 'handleTalkFail': // 对讲失败
+			// ...
+			break;
+
+		case 'handleTalkStopSuccess': // 结束对讲
+			// ...
+			break;
+
+		case 'handleSetVideoModeSuccess': // 切换清晰度成功
+			// ...
+			break;
+
+		case 'handlePTZSuccess': // 云台操作成功
+			// ...
+			break;
+
+		case 'handlePTZFail': // 云台操作失败
+			// ...
+			break;
+
+        default:
+            break;
+	}
+});
+
+
+```
