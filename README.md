@@ -88,7 +88,7 @@ videoPlayer.createPlayer(this.deviceSerial, this.channelNo, this.validCode, (res
 | 13  | stopPlayBack          | 停止回放         | callback 回调                                                                                                                                  | code<br>msg                    |
 | 14  | fullscreen            | 全屏           |                                                                                                                                              |                                |
 | 15  | exitFullscreen        | 退出全屏         |                                                                                                                                              |                                |
-| 16  | capturePicture        | 截图           | fileName 文件名称（默认为时间戳）<br>savePath 文件保存路径（默认为APP所在位置的sandbox）<br>callback 回调                                                                  | code<br>msg<br>data 图片base64数据 |
+| 16  | capturePicture        | 截图           | fileName 文件名称（默认为时间戳）<br>savePath 文件保存路径（默认为APP所在位置的sandbox）<br>callback 回调<br>download 是否保存图片至相册（不传或传true会在截图后自动保存至系统相册）                    | code<br>msg<br>data 图片base64数据 |
 | 17  | startRealPlayRecord   | 开始录制         | callback 回调                                                                                                                                  | code<br>msg                    |
 | 18  | stopRealPlayRecord    | 结束录制         | callback 回调                                                                                                                                  | code<br>msg                    |
 | 19  | ptzOption             | 云台操作         | command 方向，0：左，1：右，2：上，3：下，8：物理放大，9：物理缩小<br>action 指令，START开始转动，STOP停止转动                                                                     |                                |
@@ -108,45 +108,43 @@ videoPlayer.createPlayer(this.deviceSerial, this.channelNo, this.validCode, (res
 
 ```js
 globalEvent.addEventListener('onMessage', (e) => {
-	console.log("onMessage=" + JSON.stringify(e));
-	const messageKey = Object.keys(e)[0];
-	switch (messageKey) {
-		case 'handlePlaySuccess': // 播放成功
-			// ...
-			break;
+    console.log("onMessage=" + JSON.stringify(e));
+    const messageKey = Object.keys(e)[0];
+    switch (messageKey) {
+        case 'handlePlaySuccess': // 播放成功
+            // ...
+            break;
 
-		case 'handlePlayFail': // 播放失败
-			// ...
-			break;
+        case 'handlePlayFail': // 播放失败
+            // ...
+            break;
 
-		case 'handleTalkSuccess': // 对讲成功
-			// ...
-			break;
+        case 'handleTalkSuccess': // 对讲成功
+            // ...
+            break;
 
-		case 'handleTalkFail': // 对讲失败
-			// ...
-			break;
+        case 'handleTalkFail': // 对讲失败
+            // ...
+            break;
 
-		case 'handleTalkStopSuccess': // 结束对讲
-			// ...
-			break;
+        case 'handleTalkStopSuccess': // 结束对讲
+            // ...
+            break;
 
-		case 'handleSetVideoModeSuccess': // 切换清晰度成功
-			// ...
-			break;
+        case 'handleSetVideoModeSuccess': // 切换清晰度成功
+            // ...
+            break;
 
-		case 'handlePTZSuccess': // 云台操作成功
-			// ...
-			break;
+        case 'handlePTZSuccess': // 云台操作成功
+            // ...
+            break;
 
-		case 'handlePTZFail': // 云台操作失败
-			// ...
-			break;
+        case 'handlePTZFail': // 云台操作失败
+            // ...
+            break;
 
         default:
             break;
-	}
+    }
 });
-
-
 ```
