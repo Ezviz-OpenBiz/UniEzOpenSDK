@@ -1,0 +1,33 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "pages/index/sdk",
+			"style": {
+				"navigationBarTitleText": "视频组件",
+				"landscape": true,
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/configWifi/index",
+			"style" : 
+			{
+				"navigationBarTitleText" : "配网"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"pageOrientation": "auto"
+	},
+	"uniIdRouter": {}
+}

@@ -34,8 +34,8 @@ const plugin = uni.requireNativePlugin('super_ezviz');
 
 ```js
 plugin.initUniOpenSDK({
-    "openApiServer": 'https://ezcpcloudopen.wens.com.cn',
-    "openAuthApiServer": 'https://ezcpcloudopenauth.wens.com.cn',
+    "openApiServer": 'https://open.ys7.com',
+    "openAuthApiServer": 'https://openauth.ys7.com',
     "appKey": '',
     "accessToken": ''
 })
@@ -70,7 +70,20 @@ videoPlayer.createPlayer(this.deviceSerial, this.channelNo, this.validCode, (res
 ```
 
 ## 3、功能列表
+### 3.1、插件API
+*1.初始化 Demo 参考 demo/pages/index/index.vue，使用前请先填入appKey、accessToken*
 
+*2.配网 Demo 参考 demo/pages/configWifi/index.vue，使用前请先填入wifiSsid、wifiPwd、deviceSerial、deviceType、deviceVerifyCode*
+
+| 序号 | API | 名称 | 入参 | 返回结果 |
+| - | - | - | - | - |
+| initUniOpenSDK | 初始化SDK | option {<br/>&nbsp;&nbsp;&nbsp;&nbsp;openApiServer 服务地址（公有云使用https://open.ys7.com）<br/>&nbsp;&nbsp;&nbsp;&nbsp;openAuthApiServer  auth地址（公有云使用https://openauth.ys7.com）<br/>&nbsp;&nbsp;&nbsp;&nbsp;appKey 萤石开放平台提供的 appkey<br/>&nbsp;&nbsp;&nbsp;&nbsp;accessToken 萤石开放平台提供的 accessToken<br/>}<br/>callback 回调 | success<br/>code<br/>msg |
+| probeDeviceInfo | 【配网】查询设备信息 | deviceSerial 设备序列号<br/>deviceType 设备类型<br/>deviceVerifyCode 设备验证码<br/> | success<br/>code<br/>msg<br/>data 设备 HotSpot 类别 |
+| startAPConfigWifiWithSsid | 【配网】开始AP配置 | wifiSsid WiFi名称<br/>wifiPwd WiFi密码<br/>deviceSerial 设备序列号<br/>deviceVerifyCode 设备验证码<br/>deviceHotspotName 设备热点名称（HotSpot前缀_设备序列号）<br/>deviceHotspotPwd 设备热点密码（HotSpot前缀_设备验证码）<br/>autoConnectToDeviceHotSpot 自动连接热点<br/>callback 回调 | success<br/>code<br/>msg |
+| addDevice | 【配网】添加设备 | deviceSerial 设备序列号<br/>deviceVerifyCode 设备验证码<br/>callback 回调<br/> | success<br/>code<br/>msg |
+| stopAPConfigWifi | 【配网】停止AP配置 | | |
+
+### 3.2、播放组件API
 | 序号  | API                   | 名称           | 入参                                                                                                                                           | 返回结果                           |
 | --- | --------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | 1   | createPlayer          | 初始化播放器       | deviceSerial 设备序列号<br>channelNo 通道号<br>verifyCode 验证码<br>callback 回调                                                                         | code<br>msg                    |

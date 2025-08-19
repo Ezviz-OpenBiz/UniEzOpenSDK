@@ -1,0 +1,579 @@
+<template>
+	<view style="display: flex;width: 100%;height: 100%;">
+		<view class="fixed-component" style="width: 100%; height: 200px; position: fixed; top: 0; left: 0;right: 0;z-index: 9999;margin-bottom: 20px;">
+			<UniOpenSDK ref="player" style="width: 100%; height: 200px;" @message="onMessage">
+			</UniOpenSDK>
+		</view>
+		<view style="margin-top: 220px;">
+			<view v-if="!isFullScreen">
+				<view>
+					<input placeholder="请输入设备序列号" :value="deviceSerial" @input="onDeviceSerialChange" style="height: 32px;border: 1px solid #aaa;margin-bottom: 10px;" />
+					<input placeholder="请输入通道号" :value="channelNo" @input="onChannelNoChange" style="height: 32px;border: 1px solid #aaa;margin-bottom: 10px;" />
+					<input placeholder="请输入验证码" :value="validCode" @input="onValidCodeChange" style="height: 32px;border: 1px solid #aaa;margin-bottom: 10px;" />
+				</view>
+				<div class="content">
+					<button @click="createPlayer" style="margin: 20rpx;width: 200rpx;display: inline-block;">创建播放器</button>
+					<button @click="deviceRealPlay" style="margin: 20rpx;width: 200rpx;display: inline-block;">开始预览播放</button>
+					<button @click="deviceRealPlayStop" style="margin: 20rpx;width: 200rpx;display: inline-block;">结束预览播放</button>
+				</div>
+				<view v-if="flowMsg">流量：{{flowMsg}}</view>
+				<view v-if="logs">日志：{{logs.join('/n')}}</view>
+				<div class="content">
+					<button @click="deviceFullScreen" style="width: 200rpx;margin: 20rpx;">全屏</button>
+					<button @click="deviceExitFullScreen" style="width: 200rpx;margin: 20rpx;">退出全屏</button>
+				</div>
+				<div class="content">
+					<button @click="deviceOpenSound" style="width: 200rpx;margin: 20rpx;">开启声音</button>
+					<button @click="deviceCloseSound" style="width: 200rpx;margin: 20rpx;">关闭声音</button>
+				</div>
+				<div class="content">
+					<button @click="deviceStartTalk" style="width: 200rpx;margin: 20rpx;">开启对讲</button>
+					<button @click="deviceStopTalk" style="width: 200rpx;margin: 20rpx;">关闭对讲</button>
+					<button @click="setVoiceTalkStatus(true)" style="width: 200rpx;margin: 20rpx;">开启半双工</button>
+					<button @click="setVoiceTalkStatus(false)" style="width: 200rpx;margin: 20rpx;">关闭半双工</button>
+				</div>
+				<div class="content">
+					<text style="margin: 35rpx 0;">清晰度：</text>
+					<button @click="deviceChangeVideoLevel(3)" style="width: 100rpx;margin: 20rpx 10rpx;">超清</button>
+					<button @click="deviceChangeVideoLevel(2)" style="width: 100rpx;margin: 20rpx 10rpx;">高清</button>
+					<button @click="deviceChangeVideoLevel(1)" style="width: 100rpx;margin: 20rpx 10rpx;">均衡</button>
+					<button @click="deviceChangeVideoLevel(0)" style="width: 100rpx;margin: 20rpx 10rpx;">流畅</button>
+				</div>
+				<div class="content">
+					<button @click="deviceStartRealPlayRecord" style="width: 200rpx;margin: 20rpx;">开始录制</button>
+					<button @click="deviceStopRealPlayRecord" style="width: 200rpx;margin: 20rpx;">结束录制</button>
+				</div>
+				<view v-if="videoMsg" style="margin: 35rpx 0 10rpx;display: block;">录像文件路径：{{videoMsg}}</view>
+				<div class="content">
+					<button @click="deviceCaputure" style="width: 200rpx;margin: 20rpx;">截图</button>
+				</div>
+				<view v-if="pictureMsg" style="margin: 35rpx 0 10rpx;display: block;">图片文件路径：{{pictureMsg}}</view>
+				<div class="content">
+					<text style="margin: 35rpx 0;">云台：</text>
+					<button @touchstart="devicePtzUp" @touchend="devicePtzUpStop" style="width: 100rpx;margin: 20rpx 10rpx;">上</button>
+					<button @touchstart="devicePtzDown" @touchend="devicePtzDownStop" style="width: 100rpx;margin: 20rpx 10rpx;">下</button>
+					<button @touchstart="devicePtzLeft" @touchend="devicePtzLeftStop" style="width: 100rpx;margin: 20rpx 10rpx;">左</button>
+					<button @touchstart="devicePtzRight" @touchend="devicePtzRightStop" style="width: 100rpx;margin: 20rpx 10rpx;">右</button>
+				</div>
+
+				<view>
+					<view style="margin: 20px 0;">
+						<text>回放类型：</text>
+						<radio-group @change="radioChange" class="radio">
+							<label class="radio-item" :key="2">
+								<view>
+									<radio value="2" :checked="selectedRadio==2" />
+								</view>
+								<view>SD卡</view>
+							</label>
+							<label class="radio-item" :key="0">
+								<view>
+									<radio value="0" :checked="selectedRadio==0" />
+								</view>
+								<view>云存储</view>
+							</label>
+							<label class="radio-item" :key="3">
+								<view>
+									<radio value="null" :checked="selectedRadio==null" />
+								</view>
+								<view>null</view>
+							</label>
+						</radio-group>
+					</view>
+
+					<picker mode="date" :value="startDate" format="yyyy-MM-dd" @change="bindStartDateChange" style="border: 1rpx solid #aaa;">
+						<view>开始日期：{{startDate}}</view>
+					</picker>
+
+					<picker mode="multiSelector" @change="bindStartTimeChange($event)" :range="getTimeArray()" :value="startTime.split(':')" style="margin-top: 20px;border: 1rpx solid #aaa;">
+						<view class="uni-name" v-if="startTime">
+							<view>开始时间：{{startTime}}</view>
+						</view>
+						<view class="uni-placeholder" v-else>开始时间</view>
+					</picker>
+
+					<picker mode="date" :value="stopDate" format="yyyy-MM-dd" @change="bindStopDateChange" style="margin-top: 20px;border: 1rpx solid #aaa;">
+						<view>结束日期：{{stopDate}}</view>
+					</picker>
+
+					<picker mode="multiSelector" @change="bindStopTimeChange($event)" :range="getTimeArray()" :value="stopTime.split(':')" style="margin-top: 20px;border: 1rpx solid #aaa;">
+						<view class="uni-name" v-if="stopTime">
+							<view>结束时间：{{stopTime}}</view>
+						</view>
+						<view class="uni-placeholder" v-else>结束时间</view>
+					</picker>
+				</view>
+
+				<div class="content">
+					<button @click="deviceQueryRecord" style="margin: 20rpx;width: 300rpx;">查询录像片段</button>
+					<button @click="devicePlaybackSeekTo" style="margin: 20rpx;width: 300rpx;">回放跳转至开始时间</button>
+					<button @click="devicePlayBackPause" style="margin: 20rpx;width: 300rpx;display: inline-block;">暂停回放</button>
+					<button @click="devicePlayBackResume" style="margin: 20rpx;width: 300rpx;display: inline-block;">恢复回放</button>
+					<button @click="devicePlayBackStop" style="margin: 20rpx;width: 300rpx;display: inline-block;">结束回放</button>
+					
+					<button @click="releasePlayer" style="margin: 20rpx;width: 300rpx;display: inline-block;">退出页面</button>
+				</div>
+
+
+				<div class="content">
+					<text style="margin: 35rpx 0;">倍速：</text>
+					<button @click="deviceChangePlayBackSpeed(3)" style="width: 80rpx;margin: 20rpx 10rpx;">0.5</button>
+					<button @click="deviceChangePlayBackSpeed(1)" style="width: 80rpx;margin: 20rpx 10rpx;">1</button>
+					<button @click="deviceChangePlayBackSpeed(2)" style="width: 80rpx;margin: 20rpx 10rpx;">2</button>
+					<button @click="deviceChangePlayBackSpeed(4)" style="width: 80rpx;margin: 20rpx 10rpx;">4</button>
+					<button @click="deviceChangePlayBackSpeed(8)" style="width: 80rpx;margin: 20rpx 10rpx;">8</button>
+					<button @click="deviceChangePlayBackSpeed(16)" style="width: 80rpx;margin: 20rpx 10rpx;">16</button>
+				</div>
+
+				<view v-if="recordList.length>0">
+					<text>回放片段：</text>
+					<view v-for="item in recordList">
+						<button @click="devicePlayBack(item)" style="margin: 10rpx 20rpx;width: 700rpx;">{{item.startTime}} ~ {{item.endTime}}</button>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view v-if="isFullScreen" style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 99999;">
+			<view style="position: fixed; display: flex; flex-direction: row; bottom: 10px; left: 0; right: 0;height: 100px;">
+				<button @click="deviceExitFullScreen" style="width: 200rpx;margin: 20rpx;">退出全屏</button>
+				<button @click="deviceCaputure" style="width: 200rpx;margin: 20rpx;">截图</button>
+				<button @click="deviceChangeVideoLevel(3)" style="width: 100rpx;margin: 20rpx;">超清</button>
+				<button @click="deviceChangeVideoLevel(2)" style="width: 100rpx;margin: 20rpx;">高清</button>
+				<button @click="deviceChangeVideoLevel(1)" style="width: 100rpx;margin: 20rpx;">均衡</button>
+				<button @click="deviceChangeVideoLevel(0)" style="width: 100rpx;margin: 20rpx;">流畅</button>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	const globalEvent = weex.requireModule('globalEvent');
+	export default {
+		data() {
+			return {
+				windowWidth: 0,
+				windowHeight: 0,
+				deviceSerial: '',           // 从萤石开放平台控制台 - 设备管理获取
+				channelNo: 1,
+				isInit: false,
+				validCode: '',              // 填写设备验证码
+				isFullScreen: false,
+				selectedRadio: 2,
+				videoMsg: null,
+				pictureMsg: null,
+				flowMsg: null,
+				flowValue: 0,
+				flowTimer: null,
+				startDate: '2024-07-25',
+				startTime: '14:00:00',
+				stopDate: '2024-07-25',
+				stopTime: '15:00:00',
+				spaceId: '',
+				recordList: [],
+				logs: []
+			}
+		},
+		onBackPress(options) {
+			console.log("返回上一页：", options);
+			if (options.from === 'navigateBack' || options.from === 'backbutton') {
+				// 从导航返回触发时执行
+				var videoPlayer = this.$refs.player;
+				videoPlayer.release((res) => {
+					console.log("播放器销毁", res);
+					uni.navigateTo({
+						url: './index'
+					});
+				});
+				return true;
+			}
+			return false;
+		},
+		onLoad() {
+			const systemInfo = uni.getSystemInfoSync();
+			this.windowWidth = systemInfo.windowWidth;
+			this.windowHeight = systemInfo.windowHeight;
+			plus.screen.lockOrientation('default');
+			
+			globalEvent.addEventListener("onMessage", function (e) {
+			  console.log("onMessage", JSON.stringify(e));
+			});
+		},
+		onUnload() {
+			plus.screen.lockOrientation('portrait-primary');
+		},
+		methods: {
+			releasePlayer() {
+				var videoPlayer = this.$refs.player;
+				videoPlayer.release((res) => {
+					console.log("播放器销毁", res);
+					uni.navigateTo({
+						url: './index'
+					});
+				});
+			},
+			onMessage(e) {
+				this.logs.push(JSON.stringify(e.detail));
+			},
+			onDeviceSerialChange(e) {
+				this.deviceSerial = e.detail.value;
+			},
+			onChannelNoChange(e) {
+				this.channelNo = e.detail.value;
+			},
+			onValidCodeChange(e) {
+				this.validCode = e.detail.value;
+			},
+			radioChange(e) {
+				this.selectedRadio = e.detail.value;
+			},
+
+			getTimeArray() {
+				let timeArr = []
+				timeArr.push(this.getLoopArray(0, 23))
+				timeArr.push(this.getLoopArray(0, 59))
+				timeArr.push(this.getLoopArray(0, 59))
+				return timeArr;
+			},
+			getLoopArray(startNum, endNum) {
+				let array = [];
+				for (let i = startNum; i <= endNum; i++) {
+					i < 10 ? array.push('0' + i) : array.push('' + i);
+				}
+				return array;
+			},
+			/**选择年月日**/
+			bindStartDateChange(e) {
+				console.log(e.detail.value);
+				this.startDate = e.detail.value;
+			},
+			bindStopDateChange(e) {
+				console.log(e.detail.value);
+				this.stopDate = e.detail.value;
+			},
+			/**选择时分秒**/
+			bindStartTimeChange(e) {
+				let timeArr = e.detail.value;
+				this.startTime = (timeArr[0] < 10 ? '0' + timeArr[0] : '' + timeArr[0]) +
+					':' +
+					(timeArr[1] < 10 ? '0' + timeArr[1] : '' + timeArr[1]) + ':' +
+					(timeArr[2] < 10 ? '0' + timeArr[2] : '' + timeArr[2])
+			},
+			bindStopTimeChange(e) {
+				let timeArr = e.detail.value;
+				this.stopTime = (timeArr[0] < 10 ? '0' + timeArr[0] : '' + timeArr[0]) +
+					':' +
+					(timeArr[1] < 10 ? '0' + timeArr[1] : '' + timeArr[1]) + ':' +
+					(timeArr[2] < 10 ? '0' + timeArr[2] : '' + timeArr[2])
+			},
+			createPlayer() {
+				if (this.deviceSerial.length == 0 || this.channelNo.length == 0) {
+					uni.showToast({
+						title: '请先输入设备序列号、通道号',
+						icon: 'none'
+					})
+					return
+				}
+				var videoPlayer = this.$refs.player;
+				videoPlayer.createPlayer(this.deviceSerial, this.channelNo, this.validCode, (res) => {
+					console.log(res)
+					if (res.code == '200') {
+						this.isInit = true;
+						uni.showToast({
+							title: '创建播放器成功',
+							icon: 'none'
+						})
+						
+						console.log("创建成功")
+					}
+				});
+				
+				videoPlayer.setEventCallback(function(e) {
+					console.log(JSON.stringify(e));
+				});
+			},
+			deviceRealPlay() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.startRealPlay);
+				videoPlayer.startRealPlay((res) => {
+					console.log(res);
+					if (this.flowTimer) {
+						clearInterval(this.flowTimer);
+						this.flowTimer = setInterval(() => {
+							videoPlayer.getStreamFlow((r) => {
+								let unit = parseFloat(r.msg) - this.flowValue;
+								this.flowValue = parseFloat(r.msg);
+								this.flowMsg = parseFloat(unit / 1024).toFixed(2) + 'k/s';
+							})
+						}, 1000)
+					} else {
+						this.flowTimer = setInterval(() => {
+							videoPlayer.getStreamFlow((r) => {
+								let unit = parseFloat(r.msg) - this.flowValue;
+								this.flowValue = parseFloat(r.msg);
+								this.flowMsg = parseFloat(unit / 1024).toFixed(2) + 'k/s';
+							})
+						}, 1000)
+					}
+				});
+			},
+			deviceRealPlayStop() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.stopRealPlay);
+				videoPlayer.stopRealPlay();
+				clearInterval(this.flowTimer);
+				this.flowMsg = null;
+				this.flowValue = 0;
+			},
+			deviceFullScreen() {
+				plus.screen.lockOrientation('landscape-primary');
+				var videoPlayer = this.$refs.player;
+				setTimeout(() => {
+					console.log('this.$refs.player>>>', videoPlayer.fullscreen);
+					videoPlayer.fullscreen();
+					this.isFullScreen = true;
+				}, 300)
+			},
+			deviceExitFullScreen() {
+				plus.screen.lockOrientation('portrait-primary');
+				var videoPlayer = this.$refs.player;
+				setTimeout(() => {
+					console.log('this.$refs.player>>>', videoPlayer.exitFullscreen);
+					videoPlayer.exitFullscreen();
+					this.isFullScreen = false;
+				}, 300)
+			},
+			deviceOpenSound() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.openSound);
+				videoPlayer.openSound();
+			},
+			deviceCloseSound() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.closeSound);
+				videoPlayer.closeSound();
+			},
+			deviceStartTalk() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.startTalk);
+				videoPlayer.startTalk(true);
+			},
+			deviceStopTalk() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.stopTalk);
+				videoPlayer.stopTalk();
+			},
+			setVoiceTalkStatus(status) {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.setVoiceTalkStatus);
+				videoPlayer.setVoiceTalkStatus(status);
+			},
+			deviceChangeVideoLevel(level) {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.changeVideoLevel);
+				videoPlayer.changeVideoLevel(level);
+				uni.showToast({
+					title: `清晰度切换至：${level}`,
+					icon: 'none'
+				})
+			},
+			deviceCaputure() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.capturePicture);
+				videoPlayer.capturePicture('test', null, (res) => {
+					if (res.code == '200') {
+						uni.showToast({
+							title: '图片保存成功',
+							icon: 'none'
+						})
+						console.log("base64图片数据：", JSON.stringify(res.data));
+					}
+				});
+			},
+			deviceStartRealPlayRecord() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.startRealPlayRecord);
+				videoPlayer.startRealPlayRecord((res) => {
+					if (res.code == '200') {
+						this.videoMsg = res.msg;
+					}
+				});
+			},
+			deviceStopRealPlayRecord() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.stopRealPlayRecord);
+				videoPlayer.stopRealPlayRecord();
+			},
+			devicePtzUp() { //0：左，1：右，2：上，3：下
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.ptzOption);
+				videoPlayer.ptzOption(2, "START");
+			},
+			devicePtzUpStop() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.ptzOption);
+				videoPlayer.ptzOption(2, "STOP");
+			},
+			devicePtzDown() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.ptzOption);
+				videoPlayer.ptzOption(3, "START");
+			},
+			devicePtzDownStop() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.ptzOption);
+				videoPlayer.ptzOption(3, "STOP");
+			},
+			devicePtzLeft() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.ptzOption);
+				videoPlayer.ptzOption(0, "START");
+			},
+			devicePtzLeftStop() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.ptzOption);
+				videoPlayer.ptzOption(0, "STOP");
+			},
+			devicePtzRight() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.ptzOption);
+				videoPlayer.ptzOption(1, "START");
+			},
+			devicePtzRightStop() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.ptzOption);
+				videoPlayer.ptzOption(1, "STOP");
+			},
+			deviceQueryRecord() {
+				if (!this.isInit) {
+					uni.showToast({
+						title: "请先创建播放器",
+						icon: 'none'
+					})
+					return;
+				}
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.startQueryRecordFiles);
+				videoPlayer.startQueryRecordFiles(this.startDate + " " + this.startTime, this.stopDate + " " + this
+					.stopTime, this.selectedRadio, 'all', '0', (res) => {
+						console.log(res);
+						if (res.code == '200') {
+							uni.showToast({
+								title: "回放片段查询成功",
+								icon: 'none'
+							})
+							this.recordList = res.data;
+						} else {
+							uni.showModal({
+								title: "回放片段查询失败",
+								content: JSON.stringify(res)
+							})
+						}
+					});
+			},
+			devicePlaybackSeekTo() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.playbackSeekTo);
+				videoPlayer.playbackSeekTo(this.startDate + " " + this.startTime);
+			},
+			devicePlayBack(item) {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.startPlayBack);
+				videoPlayer.startPlayBack(item, this.selectedRadio);
+				if (this.flowTimer) {
+					clearInterval(this.flowTimer);
+					this.flowTimer = setInterval(() => {
+						videoPlayer.getStreamFlow((r) => {
+							let unit = parseFloat(r.msg) - this.flowValue;
+							this.flowValue = parseFloat(r.msg);
+							this.flowMsg = parseFloat(unit / 1024).toFixed(2) + 'k/s';
+						})
+					}, 1000)
+				} else {
+					this.flowTimer = setInterval(() => {
+						videoPlayer.getStreamFlow((r) => {
+							let unit = parseFloat(r.msg) - this.flowValue;
+							this.flowValue = parseFloat(r.msg);
+							this.flowMsg = parseFloat(unit / 1024).toFixed(2) + 'k/s';
+						})
+					}, 1000)
+				}
+			},
+			devicePlayBackStop() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.stopPlayBack);
+				videoPlayer.stopPlayBack();
+				clearInterval(this.flowTimer);
+				this.flowMsg = null;
+				this.flowValue = 0;
+			},
+			devicePlayBackPause() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.pause);
+				videoPlayer.pause();
+			},
+			devicePlayBackResume() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.resume);
+				videoPlayer.resume();
+			},
+			deviceStartPlayBackRecord() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.startPlayBackRecord);
+				videoPlayer.startPlayBackRecord();
+			},
+			deviceStopPlayBackRecord() {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.stopPlayBackRecord);
+				videoPlayer.stopPlayBackRecord();
+			},
+			deviceChangePlayBackSpeed(speed) {
+				var videoPlayer = this.$refs.player;
+				console.log('this.$refs.player>>>', videoPlayer.changePlayBackSpeed);
+				videoPlayer.changePlayBackSpeed(speed);
+				uni.showToast({
+					title: `切换至：${speed==3?'0.5':speed}倍速`,
+					icon: 'none'
+				})
+			}
+		},
+	}
+</script>
+
+<style>
+	.container {
+		padding-top: 250px;
+	}
+
+	.fixed-component {
+		background-color: rgba(0, 0, 0, 1);
+	}
+
+	.content {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.fullscreen {
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 9999;
+	}
+
+	.radio {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.radio-item {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		margin: 10px;
+	}
+</style>
