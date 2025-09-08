@@ -32,11 +32,11 @@
 	export default {
 		data() {
 			return {
-				wifiSsid: '',                            // 填写设备要连接的WiFi的ssid
-				wifiPwd: '',                             // 填写设备要连接的WiFi的密码
-				deviceSerial: '',                        // 填写要配网的设备序列号
-				deviceType: ' ',                         // 填写要配网的设备类型
-				deviceVerifyCode: '',                    // 填写要配网的设备验证码
+				wifiSsid: '',           // WiFi的ssid
+				wifiPwd: '',            // WiFi的密码
+				deviceSerial: '',       // 设备序列号
+				deviceType: '',         // 设备类型
+				deviceVerifyCode: '',     
 				deviceInfo: {},
 				configInfo: {},
 				configLoading: false,

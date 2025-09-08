@@ -194,8 +194,10 @@
 			this.windowHeight = systemInfo.windowHeight;
 			plus.screen.lockOrientation('default');
 			
-			globalEvent.addEventListener("onMessage", function (e) {
-			  console.log("onMessage", JSON.stringify(e));
+			globalEvent.addEventListener("onMessage", (e) => {
+				this.onMessage({
+					detail: e
+				});
 			});
 		},
 		onUnload() {
