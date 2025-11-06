@@ -63,6 +63,31 @@
 					return false;
 				}
 			},
+			navigateToVideoPlayerAndroid() {
+				if (uni.getSystemInfoSync().platform === 'android') {
+					if (this.openApiServer.length > 0 && this.openAuthApiServer.length > 0 && this.appKey.length > 0 && this.accessToken.length > 0) {
+						plugin.initUniOpenSDK({
+							"openApiServer": this.openApiServer,
+							"openAuthApiServer": this.openAuthApiServer,
+							"appKey": this.appKey,
+							"accessToken": this.accessToken
+						})
+						uni.navigateTo({
+							url: './androidsdk'
+						});
+					} else {
+						uni.showToast({
+							title: '请检查初始化参数',
+							icon: 'none'
+						})
+					}
+				} else {
+					uni.showModal({
+						title: 'SDK类型选择异常',
+						content: '当前为iOS系统，无法使用Android SDK'
+					})
+				}
+			},
 			navigateToVideoPlayer() {
 				if (this.isInit()) {
 					uni.navigateTo({
