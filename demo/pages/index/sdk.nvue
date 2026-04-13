@@ -19,6 +19,12 @@
 				<view v-if="flowMsg">流量：{{flowMsg}}</view>
 				<view v-if="logs">日志：{{logs.join('/n')}}</view>
 				<div class="content">
+					<button @click="setViewRatio(0)" style="margin: 20rpx;width: 200rpx;display: inline-block;">平铺</button>
+					<button @click="setViewRatio(1)" style="margin: 20rpx;width: 200rpx;display: inline-block;">16:9</button>
+					<button @click="setViewRatio(2)" style="margin: 20rpx;width: 200rpx;display: inline-block;">4:3</button>
+					<button @click="setViewRatio(3)" style="margin: 20rpx;width: 200rpx;display: inline-block;">1:1</button>
+				</div>
+				<div class="content">
 					<button @click="deviceFullScreen" style="width: 200rpx;margin: 20rpx;">全屏</button>
 					<button @click="deviceExitFullScreen" style="width: 200rpx;margin: 20rpx;">退出全屏</button>
 				</div>
@@ -317,6 +323,10 @@
 						}, 1000)
 					}
 				});
+			},
+			setViewRatio(value) {
+				var videoPlayer = this.$refs.player;
+				videoPlayer.setViewRatio(parseInt(value));
 			},
 			deviceRealPlayStop() {
 				var videoPlayer = this.$refs.player;
