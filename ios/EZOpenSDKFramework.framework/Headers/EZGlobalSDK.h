@@ -21,6 +21,7 @@
 @class EZHiddnsDeviceInfo;
 @class EZDeviceCloudServiceInfo;
 @class EZWiFiItemInfo, EZAPDevInfo, EZConfigTokenInfo;
+@class EZBWCheckAddressInfo;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -67,11 +68,31 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)setDebugLogEnable:(BOOL)enable;
 
 /**
+ *  设置SDK中的XLog是否可用，需在初始化sdk之前调用
+ *
+ *  @param enable 是否可用，默认可用
+ *
+ *  @return YES/NO
+ */
++ (BOOL)setXLogEnable:(BOOL)enable;
+
+/**
  *  设置debug日志回调,需在初始化sdk之前调用
  *
  *  @param logCallback 日志回调
  */
 + (void)setDebugLogCallBack:(void(^)(NSString *logStr))logCallback;
+
+/**
+ *  设置是否缓存sdk中的码流文件，用于码流调试；打开后，每次取流都会将码流保存到沙盒中
+ *  在debug模式下设置开启，release下必须关闭或者删除，否则沙盒中会产生大量的码流文件，占用手机存储空间
+ *  视频码流路径：沙盒/Documents/ezopensdk/EZSavedStreamData
+ *  对讲码流路径：沙盒/Documents/ezopensdk/EZSavedIntercomData
+ *  @param enable 是否打开，默认NO
+ *
+ *  @return YES/NO
+ */
++ (BOOL)setDebugStreamEnable:(BOOL)enable;
 
 /**
  *  打开授权登录中间页面接口
@@ -278,13 +299,13 @@ NS_ASSUME_NONNULL_BEGIN
  *  获取指定时间内的所有录像文件
  *
  *  @param deviceSerial 设备序列号
- *  @param cameraNo     通道号，传入<=0的值则为默认值
- *  @param beginTime    开始时间，传入nil则为当天00:00:00
- *  @param endTime      结束时间，传入nil则为当天23:59:59
- *  @param rectype      回放源，0-系统自动选择，1-云存储，2-本地录像。非必选，默认为0，传入负值则为默认值
- *  @param bizType       设备归属业务来源
- *  @param platFormId  平台ID
- *  @param completion   回调block records:EzvizRecordFileInfo的数组
+ *  @param cameraNo          通道号，传入<=0的值则为默认值
+ *  @param beginTime        开始时间，传入nil则为当天00:00:00
+ *  @param endTime            结束时间，传入nil则为当天23:59:59
+ *  @param rectype            回放源，0-系统自动选择，1-云存储，2-本地录像。非必选，默认为0，传入负值则为默认值
+ *  @param bizType            设备归属业务来源
+ *  @param platFormId      平台ID
+ *  @param completion      回调block，正常时返回EzvizRecordFileInfo的对象数组，错误时返回错误码
  *
  *  @return operation
  */
@@ -879,30 +900,6 @@ NS_ASSUME_NONNULL_BEGIN
  * 停止AP配网
  */
 + (void)stopAPConfigWifi;
-
-#pragma mark - EZLink配网相关Api
-
-/**
- * EZLink配网接口
- *
- * @param ssid WiFi的ssid
- * @param password WiFi的密码
- * @param deviceSerial 设备序列号
- * @param verifyCode 设备验证码
- * @param statusBlock 结果回调，返回配网过程中的各种状态
- *
- * @return 成功或失败
- */
-+ (BOOL)startAPLinkConfigWifiWithSsid:(NSString *)ssid
-                             password:(NSString *)password
-                         deviceSerial:(NSString *)deviceSerial
-                           verifyCode:(NSString *)verifyCode
-                         deviceStatus:(void (^)(EZWifiConfigStatus status, NSString *deviceSerial))statusBlock;
-
-/**
- * 停止EZLink配网
- */
-+ (void)stopAPLinkConfigWifi;
 
 #pragma mark - 接触式配网 New AP Config
 

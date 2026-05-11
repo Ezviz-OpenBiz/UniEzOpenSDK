@@ -1,8 +1,7 @@
 <template>
 	<view style="display: flex;width: 100%;height: 100%;">
 		<view class="fixed-component" style="width: 100%; height: 200px; position: fixed; top: 0; left: 0;right: 0;z-index: 9999;margin-bottom: 20px;">
-			<UniOpenSDK ref="player" style="width: 100%; height: 200px;" @message="onMessage">
-			</UniOpenSDK>
+			<UniOpenSDK ref="player" style="width: 100%; height: 200px;" @message="onMessage"></UniOpenSDK>
 		</view>
 		<view style="margin-top: 220px;">
 			<view v-if="!isFullScreen">
@@ -159,7 +158,7 @@
 			return {
 				windowWidth: 0,
 				windowHeight: 0,
-				deviceSerial: '',           // 从萤石开放平台控制台 - 设备管理获取
+				deviceSerial: 'BA5551167',           // 从萤石开放平台控制台 - 设备管理获取
 				channelNo: 1,
 				isInit: false,
 				validCode: '',              // 填写设备验证码
@@ -208,6 +207,54 @@
 		},
 		onUnload() {
 			plus.screen.lockOrientation('portrait-primary');
+		},
+		onReady() {
+			var videoPlayer = this.$refs.player;
+			// 注册事件监听
+			globalEvent.addEventListener('onMessage', (e) => {
+				console.log("onMessage=" + JSON.stringify(e));
+				const messageKey = Object.keys(e)[0];
+				switch (messageKey) {
+					case 'handleVideoSizeChange': // 播放器尺寸变化
+						this.onMessage = 'handleVideoSizeChange:' + JSON.stringify(e[messageKey].data);
+						break;
+
+						case 'handlePlaySuccess': // 播放成功
+							this.onMessage = JSON.stringify(e[messageKey].msg);
+							break;
+
+						case 'handlePlayFail': // 播放失败
+							this.onMessage = JSON.stringify(e[messageKey].msg);
+							break;
+
+						case 'handleTalkSuccess': // 对讲成功
+							this.onMessage = JSON.stringify(e[messageKey].msg);
+							break;
+
+						case 'handleTalkFail': // 对讲失败
+							this.onMessage = JSON.stringify(e[messageKey].msg);
+							break;
+
+						case 'handleTalkStopSuccess': // 结束对讲
+							this.onMessage = JSON.stringify(e[messageKey].msg);
+							break;
+
+						case 'handleSetVideoModeSuccess': // 切换清晰度成功
+							this.onMessage = JSON.stringify(e[messageKey].msg);
+							break;
+
+						case 'handlePTZSuccess': // 云台操作成功
+							this.onMessage = JSON.stringify(e[messageKey].msg);
+							break;
+
+						case 'handlePTZFail': // 云台操作失败
+							this.onMessage = JSON.stringify(e[messageKey].msg);
+							break;
+
+					default:
+						break;
+				}
+			});
 		},
 		methods: {
 			releasePlayer() {
@@ -324,10 +371,6 @@
 					}
 				});
 			},
-			setViewRatio(value) {
-				var videoPlayer = this.$refs.player;
-				videoPlayer.setViewRatio(parseInt(value));
-			},
 			deviceRealPlayStop() {
 				var videoPlayer = this.$refs.player;
 				console.log('this.$refs.player>>>', videoPlayer.stopRealPlay);
@@ -336,6 +379,10 @@
 				this.flowMsg = null;
 				this.flowValue = 0;
 			},
+			setViewRatio(value) {
+				var videoPlayer = this.$refs.player;
+				videoPlayer.setViewRatio(parseInt(value));
+			},
 			deviceFullScreen() {
 				plus.screen.lockOrientation('landscape-primary');
 				var videoPlayer = this.$refs.player;
@@ -343,15 +390,14 @@
 					console.log('this.$refs.player>>>', videoPlayer.fullscreen);
 					videoPlayer.fullscreen();
 					this.isFullScreen = true;
-				}, 300)
+				}, 800)
 			},
 			deviceExitFullScreen() {
-				plus.screen.lockOrientation('portrait-primary');
 				var videoPlayer = this.$refs.player;
+				videoPlayer.exitFullscreen();
+				this.isFullScreen = false;
 				setTimeout(() => {
-					console.log('this.$refs.player>>>', videoPlayer.exitFullscreen);
-					videoPlayer.exitFullscreen();
-					this.isFullScreen = false;
+					plus.screen.lockOrientation('portrait-primary');
 				}, 300)
 			},
 			deviceOpenSound() {

@@ -1,0 +1,471 @@
+<template>
+	<view class="page">
+		<!-- 视频区域 -->
+		<view :class="isDeviceOnline ? 'video-area-full' : 'video-area-half'">
+			<!-- 大窗容器 -->
+			<view class="remote-video">
+				<ErtcVideoView ref="bigView" class="fill-view" />
+				<view class="status-bar" v-if="!isDeviceOnline && isInRoom && !isSwapped">
+					<text class="status-text">等待设备接听...</text>
+				</view>
+			</view>
+			<!-- 小窗容器 -->
+			<view class="local-video" @click="swapVideo">
+				<ErtcVideoView ref="smallView" class="fill-view" />
+				<view class="pip-status" v-if="!isDeviceOnline && isInRoom && isSwapped">
+					<text class="pip-status-text">等待接听</text>
+				</view>
+			</view>
+			<!-- 通话时长 -->
+			<view class="duration-bar" v-if="isDeviceOnline">
+				<text class="duration-text">通话中 {{ formatDuration(talkSeconds) }}</text>
+			</view>
+			<!-- 控制按钮悬浮在画面底部 -->
+			<view class="control-overlay" v-if="isInRoom">
+				<view class="ctrl-row">
+					<view class="ctrl-btn" @click="toggleMic">
+						<text class="ctrl-text">{{ isMicOn ? '🎤 静音' : '🔇 取消静音' }}</text>
+					</view>
+					<view class="ctrl-btn" @click="toggleSpeaker">
+						<text class="ctrl-text">{{ isSpeakerOn ? '🔊 听筒' : '🔈 扬声器' }}</text>
+					</view>
+					<view class="ctrl-btn" @click="doSwitchCamera">
+						<text class="ctrl-text">📷 切换</text>
+					</view>
+					<view class="ctrl-btn" @click="toggleCamera">
+						<text class="ctrl-text">{{ isCameraOn ? '📹 关闭' : '📹 开启' }}</text>
+					</view>
+				</view>
+				<view class="ctrl-row">
+					<view class="hangup-btn" @click="doHangUp">
+						<text class="hangup-text">挂断</text>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<!-- 参数输入区域（未接通时显示） -->
+		<scroll-view scroll-y class="params-area" v-if="!isDeviceOnline">
+			<text class="section-title">ERTC 参数配置</text>
+			<input placeholder="AppKey (萤石开放平台)" :value="appKey" @input="e => appKey = e.detail.value"
+				class="input-field" />
+			<input placeholder="AccessToken (萤石开放平台)" :value="accessToken"
+				@input="e => accessToken = e.detail.value" class="input-field" />
+			<input placeholder="ERTC项目ID (appId)" :value="appId" @input="e => appId = e.detail.value"
+				class="input-field" />
+			<input placeholder="房间ID (roomId)" :value="roomId" @input="e => roomId = e.detail.value"
+				class="input-field" />
+			<input placeholder="用户ID (userId)" :value="userId" @input="e => userId = e.detail.value"
+				class="input-field" />
+			<input placeholder="客户端Token (ertcClientToken)" :value="ertcClientToken"
+				@input="e => ertcClientToken = e.detail.value" class="input-field" />
+			<input placeholder="设备端Token (ertcDeviceToken)" :value="ertcDeviceToken"
+				@input="e => ertcDeviceToken = e.detail.value" class="input-field" />
+			<input placeholder="设备序列号 (deviceSerial)" :value="deviceSerial"
+				@input="e => deviceSerial = e.detail.value" class="input-field" />
+			<input placeholder="通道号 (channelNo)" :value="channelNo" @input="e => channelNo = e.detail.value"
+				class="input-field" type="number" />
+			<view class="btn-row" v-if="!isInRoom">
+				<button class="btn-primary" @click="doInitAndCall">初始化并呼叫设备</button>
+			</view>
+			<view class="btn-row" v-if="!isInRoom">
+				<button class="btn-secondary" @click="doInitAndJoin">初始化并接听(设备呼叫)</button>
+			</view>
+			<!-- 日志区域 -->
+			<view v-if="logs.length > 0" style="margin-top: 20rpx;">
+				<text class="log-title">事件日志：</text>
+				<text class="log-item" v-for="(log, idx) in logs" :key="idx">{{ log }}</text>
+			</view>
+		</scroll-view>
+	</view>
+</template>
+
+<script>
+const videoTalk = uni.requireNativePlugin('super_ezviz_videotalk');
+
+export default {
+	data() {
+		return {
+			// ===== 表单参数（用户填写） =====
+			appKey: '26810f3acd794862b608b6cfbc32a6b8',
+			accessToken: 'at.98yyp2ac7a8kijz43pda1yv22wep1csq-9gx67w3my8-02npd5c-jgsqmrma8',
+			appId: 'b60e65097d954746bd1ae1d7c679e28c',
+			roomId: '1111',
+			userId: '18042172492',
+			ertcClientToken: 'tk.oCBiNjBlNjUwOTdkOTU0NzQ2YmQxYWUxZDdjNjc5ZTI4YwBMeyJFUlRDX0lORk8iOnsic3RyUm9vbUlkIjoiMTExMSIsImN1c3RvbUlkIjoiMTgwNDIxNzI0OTIiLCJwZXJtaXNzaW9uIjoiNyJ9fQAAAABp5Y5jAAFRgCw0TTZoRU5YbFpUTWhwUVRod3BMMjQzVHpPZGtqQ3BvQ1B3RmgwblI4SUJ3PR4QJoEPOs15SGK2CLbPvDKmuA__',
+			ertcDeviceToken: 'tk.oCBiNjBlNjUwOTdkOTU0NzQ2YmQxYWUxZDdjNjc5ZTI4YwBKeyJFUlRDX0lORk8iOnsic3RyUm9vbUlkIjoiMTExMSIsImN1c3RvbUlkIjoiQkY0MTA4OTU3IiwicGVybWlzc2lvbiI6IjcifX0AAAAAaeWOYwABUYAsd2pvQ1NkZnVLL2xsTGxyekhDUXhhWjFBdUdkZ1BicFduaU9oSXU0M1o2QT0eECaBDzrNeUhitgi2z7wyprg_',
+			deviceSerial: 'BF4108957',
+			channelNo: '1',
+			// ===== UI交互状态 =====
+			isInRoom: false,
+			isDeviceOnline: false,
+			isMicOn: true,
+			isSpeakerOn: true,
+			isCameraOn: true,
+			isSwapped: false,
+			remoteUserId: '',
+			talkSeconds: 0,
+			talkTimer: null,
+			logs: []
+		}
+	},
+	onLoad() {
+		videoTalk.registerEventListener((event) => {
+			this.addLog(`[${event.event}] ${JSON.stringify(event)}`);
+			switch (event.event) {
+				case 'onEnterRoomSuccess':
+					this.addLog('进入房间成功');
+					break;
+				case 'onRemoteUserEnterRoom':
+					this.isDeviceOnline = true;
+					this.remoteUserId = event.userId;
+					this.startTimer();
+					this.addLog('设备已接听: ' + event.userId);
+					break;
+				case 'onUserVideoAvailable':
+					if (event.available) {
+						this.remoteUserId = event.userId;
+						const remoteRef = this.isSwapped ? this.$refs.smallView : this.$refs.bigView;
+						if (remoteRef) {
+							remoteRef.bindRemoteViewWithMode(event.userId, 0, 0);
+							this.addLog('远端视频可用，已绑定视图');
+						}
+					}
+					break;
+				case 'onRemoteUserLeaveRoom':
+					this.addLog('设备已离开: ' + event.userId);
+					this.doHangUp();
+					break;
+				case 'onError':
+					this.addLog('ERTC错误: ' + event.errorCode);
+					break;
+				case 'onInviteDeviceFailed':
+					this.addLog('邀请设备失败: ' + event.msg);
+					break;
+			}
+		});
+	},
+	onUnload() {
+		this.stopTimer();
+		videoTalk.destroyEngine();
+	},
+	methods: {
+		addLog(msg) {
+			const time = new Date().toLocaleTimeString();
+			this.logs.unshift(`[${time}] ${msg}`);
+			if (this.logs.length > 50) this.logs.pop();
+		},
+		formatDuration(seconds) {
+			const m = Math.floor(seconds / 60);
+			const s = seconds % 60;
+			return `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+		},
+		startTimer() {
+			this.talkSeconds = 0;
+			this.talkTimer = setInterval(() => { this.talkSeconds++; }, 1000);
+		},
+		stopTimer() {
+			if (this.talkTimer) {
+				clearInterval(this.talkTimer);
+				this.talkTimer = null;
+			}
+		},
+		checkParams() {
+			if (!this.appKey || !this.accessToken) {
+				uni.showToast({ title: '请填写appKey和accessToken', icon: 'none' });
+				return false;
+			}
+			if (!this.appId || !this.roomId || !this.userId || !this.ertcClientToken) {
+				uni.showToast({ title: '请填写必要参数(appId/roomId/userId/clientToken)', icon: 'none' });
+				return false;
+			}
+			return true;
+		},
+		/** 手机呼叫设备：初始化引擎 → 进入房间 → 自动邀请设备入会 */
+		doInitAndCall() {
+			if (!this.checkParams()) return;
+			if (!this.deviceSerial || !this.ertcDeviceToken) {
+				uni.showToast({ title: '呼叫设备需填写deviceSerial和deviceToken', icon: 'none' });
+				return;
+			}
+			this.initAndEnterRoom(true, {
+				roomId: this.roomId,
+				userId: this.userId,
+				ertcClientToken: this.ertcClientToken,
+				ertcDeviceToken: this.ertcDeviceToken
+			});
+		},
+		/** 设备呼叫手机（接听）：初始化引擎 → 进入房间（不邀请设备，设备已在房间中） */
+		doInitAndJoin() {
+			if (!this.appKey || !this.accessToken || !this.appId) {
+				uni.showToast({ title: '请填写appKey、accessToken和appId', icon: 'none' });
+				return;
+			}
+			// ===== 调试用：请求接口获取接听参数（正式接入时替换为业务层传入的参数） =====
+			this.addLog('正在获取接听参数...');
+			this.fetchAnswerParams((params) => {
+				this.addLog('接听参数: ' + JSON.stringify(params));
+				this.initAndEnterRoom(false, params);
+			});
+		},
+		/**
+		 * 【调试用】请求接口获取接听所需的 roomId、userId、ertcClientToken、ertcDeviceToken
+		 * 正式接入时移除此方法，改为直接使用业务层传入的参数调用 initAndEnterRoom
+		 */
+		fetchAnswerParams(callback) {
+			const callDataUrl = 'http://127.0.0.1:9999/api/third/requests?username=%E5%BE%90%E9%91%AB%E9%9B%A85';
+			this.addLog('正在查询呼叫消息...');
+			uni.request({
+				url: callDataUrl,
+				method: 'GET',
+				header: {
+					'Accept': 'application/json, text/plain, */*',
+					'Cookie': 'p_session_id=aa495f9d291649391b428a5cca9e6a1c; userName=xuxinyu5; LtpaToken=AAECAzY5RTU4RkQ1NjlFNjM4OTV4dXhpbnl1NfYi1JSpQOeBrXKyFjxSZT05q1ty; JwtToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoibjN1YUxhVUZ4emlrUlgxeGpncWZzQ0FYWDhsZ2ZMT3F1b3dON1dqRE0zcU9icHlIYlU1VUZ6L2N3UHp5QzMremIrZ095dkZ5eEpJQitnUithZUlpZHpqM0JmM1lVTmFLN2xubGJuak1QUUVyNmhjZ2VGTUhzVWc2N2Y5akdUcjNzTEhUejB1bENzbWlEZz09IiwiaWF0IjoxNzc2NjUyMjQ1LCJleHAiOjE3NzY2OTU0NDV9.5HS8V7gaCGHGxaFgKirzAVZmauNZJ9hmLFyY98X0unw'
+				},
+				dataType: 'json',
+				success: (res) => {
+					const data = typeof res.data === 'string' ? (() => { try { return JSON.parse(res.data); } catch(e) { return null; } })() : res.data;
+					const list = (data && data.data) ? data.data : (Array.isArray(data) ? data : null);
+					if (res.statusCode === 200 && list && list.length > 0) {
+						const latest = list[0];
+						try {
+							const callData = typeof latest.data === 'string' ? JSON.parse(latest.data) : latest.data;
+							const body = callData.body || callData;
+							const callId = body.callId;
+							const appId = body.appId || this.appId;
+							const strRoomId = body.strRoomId;
+							this.addLog('callId=' + callId + ', appId=' + appId + ', strRoomId=' + strRoomId);
+							// 用手机端自己的userId生成token和入会，而非callId
+							this.fetchErtcTokens(this.userId, appId, strRoomId, callback);
+						} catch (e) {
+							this.addLog('解析呼叫消息失败: ' + e.message);
+							uni.showToast({ title: '解析呼叫消息失败', icon: 'none' });
+						}
+					} else {
+						this.addLog('无呼叫消息或请求失败: status=' + res.statusCode);
+						uni.showToast({ title: '无呼叫消息', icon: 'none' });
+					}
+				},
+				fail: (err) => {
+					this.addLog('查询呼叫消息异常: ' + JSON.stringify(err));
+					uni.showToast({ title: '查询呼叫消息异常', icon: 'none' });
+				}
+			});
+		},
+		/**
+		 * 【调试用】用 callId、appId、strRoomId 生成 ertcClientToken
+		 */
+		fetchErtcTokens(callId, appId, strRoomId, callback) {
+			const tokenUrl = 'https://open.ys7.com/web/console/api/service/application/token/resourcetoken/generate';
+			this.addLog('正在生成ERTC Token...');
+			uni.request({
+				url: tokenUrl,
+				method: 'POST',
+				header: {
+					'Content-Type': 'application/json',
+					'csrftoken': '1bf27b2528e1fd8c0850f18ebca83baa',
+					'Cookie': 'csrftoken=1bf27b2528e1fd8c0850f18ebca83baa; ASG_SS=4791131675ef4836b023587374d0d901; AS_SessionID=4791131675ef4836b023587374d0d901; AS_UserID=c1cbc1d4e86d49a0981f54beea95280a; AS_Username=openteam; ASG_Au=sxe2Ynuy5YiEM%2Fva2d5VQCenoD9bP%2FMQOG%2Fkg105%2By%2FC0Nz7tU5HgofQ1Chmw7IBsJf86xmfgKyJMWu5%2FGJsRxbcmz%2FCJjnaQse4OypXG8U28JdUjqpIwNCNqR7L6NumOiwTpFXcK%2B6yfMqHZOCyGNQKv637vAn4pBLPu5mVA0JASl1iRXdk0pIZG6DZ31aRyGUR3cCuHBYIIarp6gnheqJCQS01eNEU7XTspKqLw4Kq2069MTchNjNTu8HrZVxLEZ%2BokCYsaQXwqZOxS1f4c%2F0VtMceZDNn17sgh%2FtUQbQ%3D; ASG_Aus=KoHZWBiBDl0FFfjJWF%2BCP2d3EGMuev2eCV0hAlm5ZPfGyzaJQkOJObhYpFiwuBCqOr1%2BKWtMHEZn%2FBGwh0ETwQ%3D%3D; ASG_Auc=1840873766; AS_Au=ODa8lsVnVmFFRx0_cXjwFctPKMj5xr9e7xBJH7FTl6cJpDLSsYYIZFcTU9lX5ERMQ24sZV4eF9RW28TzL5eQmzrY19_UDZ9RMf6pAug2nWep4XaGNRKcOX7Mv3FedHuk; AS_Aus=g9hdWnWzUDGenPESgH4EGqmlFz37I4Czr8gZV5GnJ9DWRicF3yiobSz_qFfS8xUoEsG3bYskmfNHIl3AoDZMzA; AS_Auc=2619134942'
+				},
+				data: {
+					appId: appId,
+					roomId: strRoomId,
+					userId: callId,
+					timeToLive: 86400,
+					openMicrophone: true,
+					openCamera: true,
+					shareScreen: false
+				},
+				success: (res) => {
+					const body = res.data || {};
+					const token = (body.data && body.data.token) || body.token;
+					if (res.statusCode === 200 && token) {
+						callback({
+							roomId: strRoomId,
+							userId: callId,
+							ertcClientToken: token,
+							ertcDeviceToken: this.ertcDeviceToken
+						});
+					} else {
+						this.addLog('生成Token失败: ' + JSON.stringify(body).substring(0, 300));
+						uni.showToast({ title: '生成Token失败', icon: 'none' });
+					}
+				},
+				fail: (err) => {
+					this.addLog('生成Token异常: ' + JSON.stringify(err));
+					uni.showToast({ title: '生成Token异常', icon: 'none' });
+				}
+			});
+		},
+		/**
+		 * 初始化ERTC引擎并进入房间
+		 * @param {Boolean} isClientCall - true: 手机主动呼叫设备; false: 接听设备来电
+		 * @param {Object} params - { roomId, userId, ertcClientToken, ertcDeviceToken }
+		 */
+		initAndEnterRoom(isClientCall, params) {
+			this.addLog('正在初始化ERTC引擎...');
+			videoTalk.initErtcEngine({ appId: this.appId, appKey: this.appKey, accessToken: this.accessToken }, (res) => {
+				this.addLog('initErtcEngine: ' + JSON.stringify(res));
+				if (!res.success) {
+					uni.showToast({ title: '引擎初始化失败: ' + res.msg, icon: 'none' });
+					return;
+				}
+				videoTalk.setVideoEncoderParam({ width: 1280, height: 720, fps: 15, bitrate: 512000 });
+				this.addLog('正在进入房间...');
+				videoTalk.enterRoom({
+					appId: this.appId,
+					roomId: params.roomId,
+					userId: params.userId,
+					ertcClientToken: params.ertcClientToken,
+					ertcDeviceToken: params.ertcDeviceToken || '',
+					deviceSerial: this.deviceSerial || '',
+					channelNo: parseInt(this.channelNo) || 1,
+					isClientCall: isClientCall
+				}, (res) => {
+					this.addLog('enterRoom: ' + JSON.stringify(res));
+					if (res.success) {
+						this.isInRoom = true;
+						this.$refs.smallView.bindLocalViewWithMode(0);
+						this.addLog('已进入房间，本地预览已绑定');
+					} else {
+						uni.showToast({ title: '进入房间失败: ' + res.msg, icon: 'none' });
+					}
+				});
+			});
+		},
+		toggleMic() {
+			this.isMicOn = !this.isMicOn;
+			videoTalk.enableLocalAudio(this.isMicOn);
+		},
+		toggleSpeaker() {
+			this.isSpeakerOn = !this.isSpeakerOn;
+			videoTalk.setSpeakerPhoneOn(this.isSpeakerOn);
+		},
+		toggleCamera() {
+			this.isCameraOn = !this.isCameraOn;
+			videoTalk.enableLocalVideo(this.isCameraOn);
+		},
+		doSwitchCamera() {
+			videoTalk.switchCamera();
+		},
+		doHangUp() {
+			this.stopTimer();
+			this.isSwapped = false;
+			videoTalk.hangUp((res) => {
+				this.addLog('hangUp: ' + JSON.stringify(res));
+				this.isInRoom = false;
+				this.isDeviceOnline = false;
+				this.talkSeconds = 0;
+			});
+		},
+		swapVideo() {
+			this.isSwapped = !this.isSwapped;
+			if (this.isSwapped) {
+				this.$refs.bigView.bindLocalViewWithMode(0);
+				if (this.remoteUserId) {
+					this.$refs.smallView.bindRemoteViewWithMode(this.remoteUserId, 0, 0);
+				}
+			} else {
+				this.$refs.smallView.bindLocalViewWithMode(0);
+				if (this.remoteUserId) {
+					this.$refs.bigView.bindRemoteViewWithMode(this.remoteUserId, 0, 0);
+				}
+			}
+		}
+	}
+}
+</script>
+
+<style>
+	.page { flex: 1; background-color: #1a1a1a; }
+
+	.video-area-half {
+		flex: 1;
+		background-color: #000000;
+		position: relative;
+	}
+	.video-area-full {
+		flex: 1;
+		background-color: #000000;
+		position: relative;
+	}
+
+	.remote-video {
+		position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+		z-index: 1;
+	}
+	.local-video {
+		position: absolute; top: 20rpx; right: 20rpx;
+		width: 180rpx; height: 240rpx;
+		border-radius: 12rpx; overflow: hidden;
+		z-index: 2;
+	}
+	.fill-view {
+		position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+	}
+
+	.status-bar {
+		position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+		align-items: center; justify-content: center;
+	}
+	.status-text { color: #ffffff; font-size: 32rpx; }
+	.pip-status {
+		position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+		align-items: center; justify-content: center;
+	}
+	.pip-status-text { color: #ffffff; font-size: 18rpx; }
+
+	.duration-bar {
+		position: absolute; top: 20rpx; left: 20rpx; z-index: 3;
+	}
+	.duration-text {
+		color: #ffffff; font-size: 28rpx;
+		background-color: rgba(0,0,0,0.5);
+		padding: 6rpx 16rpx; border-radius: 8rpx;
+	}
+
+	.control-overlay {
+		position: absolute; left: 0; right: 0; bottom: 0;
+		padding: 20rpx; z-index: 5;
+		background-color: rgba(0,0,0,0.4);
+	}
+	.ctrl-row {
+		flex-direction: row; justify-content: space-around;
+		margin-bottom: 16rpx;
+	}
+	.ctrl-btn {
+		padding: 14rpx 20rpx;
+		background-color: rgba(255,255,255,0.2);
+		border-radius: 12rpx; align-items: center;
+	}
+	.ctrl-text { font-size: 24rpx; color: #ffffff; }
+	.hangup-btn {
+		background-color: #ff3b30; border-radius: 60rpx;
+		padding: 18rpx 0; align-items: center; width: 300rpx;
+		margin-left: auto; margin-right: auto;
+	}
+	.hangup-text { color: #ffffff; font-size: 30rpx; font-weight: bold; }
+
+	.params-area {
+		flex: 1;
+		padding: 20rpx;
+		background-color: #f5f5f5;
+	}
+	.section-title { font-size: 30rpx; font-weight: bold; margin-bottom: 16rpx; color: #333; }
+	.input-field {
+		height: 68rpx; border-width: 1rpx; border-color: #cccccc; border-style: solid;
+		border-radius: 8rpx; padding-left: 16rpx; padding-right: 16rpx;
+		margin-bottom: 12rpx; font-size: 24rpx; background-color: #ffffff;
+	}
+	.btn-row { margin-bottom: 12rpx; }
+	.btn-primary {
+		background-color: #007aff; color: #ffffff;
+		border-radius: 8rpx; font-size: 28rpx;
+	}
+	.btn-secondary {
+		background-color: #4cd964; color: #ffffff;
+		border-radius: 8rpx; font-size: 28rpx;
+	}
+
+	.log-title { font-size: 24rpx; font-weight: bold; color: #666; margin-bottom: 8rpx; }
+	.log-item { font-size: 20rpx; color: #999; margin-bottom: 4rpx; }
+</style>

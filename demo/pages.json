@@ -20,6 +20,13 @@
 			{
 				"navigationBarTitleText" : "配网"
 			}
+		},
+		{
+			"path" : "pages/videoTalk/index",
+			"style" :
+			{
+				"navigationBarTitleText" : "视频通话"
+			}
 		}
 	],
 	"globalStyle": {

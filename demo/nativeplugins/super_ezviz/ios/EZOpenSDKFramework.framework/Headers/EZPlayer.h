@@ -16,6 +16,7 @@
 @class EZDevicePtzAngleInfo;
 @class EZPMPlayPrivateTokenInfo;
 @class EZDeviceDetailPublicInfo;
+@class EZPlayWaterMarkConfig;
 
 /**
  *  预览清晰度
@@ -42,6 +43,9 @@ typedef NS_ENUM(NSInteger, EZMessageCode) {
     PLAYER_NO_NETWORK = 22,           //播放器检测到无网络
     PLAYER_CLOUD_IFRAME_CHANGED = 23, //云存储快放时，由全帧快放切换到抽帧快放的提示回调
     PLAYER_PLAYSPEED_LOWER = 24,      //云存储快放时的降速通知(存在两次降速：当前倍速大于4倍速时，降到4倍速；当前为4倍速时，降为1倍速)
+    PLAYER_VIDEO_LEVEL_AUTO_IMPROVE = 25,//预览自动清晰度提升消息
+    PLAYER_VIDEO_LEVEL_AUTO_REDUCE = 26, //预览自动清晰度降低消息
+    PLAYER_PREPARED = 27,             //播放库已创建
 };
 
 
@@ -121,11 +125,24 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
 
 /**
  * 取流数据中获取开门token回调
+ * 如果门锁设备没有回调开门token的话，请确认该设备的远程开锁开关是否打开。萤石云视频App入口：设备设置-开锁设置-远程开锁-开启远程开锁
  *
  * @param player 播放器对象
  * @param tokenInfo token对象
  */
 - (void)player:(EZPlayer *)player playPrivateTokenInfo:(EZPMPlayPrivateTokenInfo *)tokenInfo;
+
+/**
+ * 对讲时采集时的音频大小，必须调用`EZPlayer.setVoiceTalkLoudnessInterval`设置回调时间间隔后才会有回调
+ * 注意：回调的音量单位为分贝，均为负数。在数字音频处理中，音量通常以dBFS（分贝满刻度）为单位来表示。
+ * 0dBFS表示信号的最大可能幅度，即满量程刻度。由于有效的信号数值通常小于这个最大值，取对数后得到的值通常是负数。
+ * 建议：(-90, -40)音量显示1格，[-40, -35)音量显示2格，[-35, -30)音量显示3格，[-30, -20)音量显示4格，[-20, 0)音量显示5格
+ * 如需其他层级的音量显示效果，需开发者自行调试
+ *
+ * @param player 播放器对象
+ * @param loudness 音频大小 [-90 ，0]
+ */
+- (void)player:(EZPlayer *)player didReceivedVoiceTalkLoudness:(float)loudness;
 
 @end
 
@@ -210,7 +227,7 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
 /**
  * EZPlayer存在的时候，切换至其他设备进行取流，不需要重新创建
  * @param deviceSerial 设备序列号
- * @param cameraNo     虚拟通道号
+ * @param cameraNo  通道号
  */
 - (void)resetDeviceSerial:(NSString *)deviceSerial cameraNo:(NSInteger)cameraNo;
 
@@ -227,6 +244,14 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
  *  @param playerView 播放器view
  */
 - (void)setPlayerView:(UIView *)playerView;
+
+/**
+ *  设置播放器的view
+ *
+ *  @param playerView 播放器view
+ *  @param streamId 双目设备轨道 0：广角镜头画面轨道 1：云台镜头画面轨道
+ */
+- (void)setPlayerView:(UIView *)playerView streamId:(int)streamId;
 
 #pragma mark - 预览
 
@@ -272,25 +297,6 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
  */
 - (BOOL)closeSound;
 
-/**
- * 预览时开始本地录像预录制功能，异步方法
- *
- * @param path 文件存储路径
- *
- * @return YES/NO
- */
-- (BOOL)startLocalRecordWithPathExt:(NSString *)path;
-
-/** 测试排查问题用，开发者勿使用，以后版本会删除 */
-- (BOOL)startLocalRecordWithPathExt:(NSString *)path psPath:(NSString *)psPath;
-
-/**
- * 结束本地录像预录制，并生成mp4录制文件，异步方法
- *
- * @param complete 操作是否成功 YES/NO
- */
-- (void)stopLocalRecordExt:(void (^)(BOOL ret))complete;
-
 #pragma mark - 对讲
 
 /**
@@ -322,6 +328,15 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
 - (BOOL)stopVoiceTalk;
 
 /**
+ * 设置对讲本地采集音量大小回调时间间隔；默认为0，响度不回调；单位：秒
+ * 在调用startVoiceTalk前生效
+ * 设置后会通过`-player:didReceivedVoiceTalkLoudness:`代理方法进行回调
+ *
+ * @param interval 回调时间间隔
+ */
+- (void)setVoiceTalkLoudnessInterval:(float)interval;
+
+/**
  *  对讲变声，对讲成功后开启，需要设备开通变声服务后才生效（只支持国内，海外不支持）
  *
  *  @param voiceChangeType 变声类型
@@ -330,7 +345,7 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
 - (void)startVoiceChange:(EZVoiceChangeType)voiceChangeType complete:(void (^)(BOOL ret, NSError *error))complete;
 
 /**
- *  半双工对讲专用接口，是否切换到听说状态
+ *  半双工对讲专用接口，是否切换到听说状态，startVoiceTalk对讲开启成功后才能调用
  *
  *  @param isPressed 是否只说状态
  *
@@ -339,11 +354,18 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
 - (BOOL)audioTalkPressed:(BOOL)isPressed;
 
 /**
- * 设置全双工对讲时的模式,对讲成功后调用
+ * 设置全双工对讲时的模式，对讲成功后调用
  *
  * @param routeToSpeaker YES:使用扬声器 NO:使用听筒
  */
 - (void)changeTalkingRouteMode:(BOOL)routeToSpeaker;
+
+/**
+ * 全双工对讲时设置手机端是否能听到对端的声音
+ *
+ * @param muted 是否静音
+ */
+- (void)setTalkRemoteMuted:(BOOL)muted;
 
 /**
  * 设置采集和播放的AGC放大的参数，在对讲发起前设置
@@ -352,6 +374,19 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
  * @param gain 目标幅值，取值[0,30]，萤石当前默认值21
  */
 - (void)setAGCParam:(NSInteger)maxGain gainLevel:(NSInteger)gain;
+
+/**
+ * 设置对讲呼叫id。设备端发起一键呼叫时，App端会通过长链接接到callingId，startVoiceTalk之前调用
+ * 具体链路如下：
+ * 1、设备端一键呼叫
+ * 2、设备端会生成一个callingId透传给萤石开放平台服务
+ * 3、萤石开放平台服务将callingId透传给客户后端服务
+ * 4、客户后端服务通过与客户App端的长链接，callingId将透传给App
+ * 5、客户App调用此api设置callingId后，再调用startVoiceTalk发起对讲
+ *
+ * @callingId 对讲呼叫id
+ */
+- (void)setVoiceTalkCallingId:(NSString *)callingId;
 
 #pragma mark - 回放
 
@@ -392,7 +427,8 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
 - (BOOL)resumePlayback;
 
 /**
- *  根据偏移时间播放
+ *  根据偏移时间播放，播放过程中才能调用
+ *  拖动进度条时调用此接口，调用前需判断下录像是否在播放中。如果录像不在播放中，需要return，不要调用此接口。
  *
  *  @param offsetTime 录像偏移时间
  */
@@ -411,26 +447,95 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
 - (BOOL)stopPlayback;
 
 /**
-sd卡及云存储倍速回放接口
+sd卡及云存储倍速回放接口（倍数后播放没有声音，这个是正常的，不是问题）
 1.支持抽帧快放的设备最高支持16倍速快放（所有取流方式，包括P2P）
 2.不支持抽帧快放的设备，仅支持内外网直连快放，最高支持8倍
 3.HCNetSDK取流没有快放概念，全速推流，只改变播放库速率
 4.注意区别：
    老SD卡回放以及HCNetSDK回放，设置完通过返回值返回成功还是失败，没有其他消息
-   新协议的云存储回放以及支持seek、continue的设备d新SD卡回放，设置完通过返回值返回成功还是失败，如果成功，
+   新协议的云存储回放以及支持seek、continue的设备的新SD卡回放，设置完通过返回值返回成功还是失败，如果成功，
    则后续还有一条EZVideoPlayerMessageStart异步消息表示成功再次取流
    返回其他错误码表示失败 (新协议云存储和新SD卡回放返回EZ_ERROR_NEED_RETRY 表示需要重试）
 
 @param rate    回放速度，具体参考 EZ_PLAY_BACK_RATE
-@param mode 回放时的抽帧控制，当前仅云存储支持。0： 4倍速全帧，8倍速以上抽帧   1：抽帧   2：全帧  （如设备回放当前不支持，传入0即可）
+@param mode    回放时的抽帧控制，当前仅云存储支持。0： 4倍速全帧，8倍速以上抽帧   1：抽帧   2：全帧  （如设备回放当前不支持，传入0即可）
 @return YES/NO
  */
-- (BOOL)setPlaybackRate:(EZPlaybackRate) rate mode:(NSUInteger)mode;
+- (BOOL)setPlaybackRate:(EZPlaybackRate)rate mode:(NSUInteger)mode;
+
+#pragma mark - 普通录制
+
+/**
+ * 预览时开始本地录像预录制功能，异步方法
+ * 注意：录制的MP4视频时长 和 应用层录制时长 对比是没有意义的。因为应用层计时器一直在走，但是网络异常导致画面卡住 或 设备码流异常（比如帧丢失、跳帧等情况）都会影响录制的时长
+ * 验证标准如下：
+ * 1、录制的MP4视频播放开始画面中的时间戳 与 实际开始录制时画面中的时间戳是否相近。
+ * 2、录制的MP4视频播放结束画面中的时间戳 与 实际结束录制时画面中的时间戳是否相近。
+ *
+ * @param path 文件存储路径
+ *
+ * @return YES/NO
+ */
+- (BOOL)startLocalRecordWithPathExt:(NSString *)path;
+
+/** 测试排查问题用，开发者勿使用，以后版本会删除 */
+- (BOOL)startLocalRecordWithPathExt:(NSString *)path psPath:(NSString *)psPath;
+
+/**
+ * 结束本地录像预录制，并生成mp4录制文件，异步方法
+ *
+ * @param complete 操作是否成功 YES/NO
+ */
+- (void)stopLocalRecordExt:(void (^)(BOOL ret))complete;
+
+#pragma mark - 水印，仅支持单目设备，不支持多目设备
+
+/**
+ * 设置渲染水印信息，新设置的waterMarkConfig会覆盖之前设置的waterMarkConfig，仅支持单目设备，不支持多目设备
+ * 预览、回放取流成功后才能调用
+ *
+ * @param waterMarkConfig 水印信息配置
+ * @return YES/NO
+ */
+- (BOOL)setWaterMarkFont:(EZPlayWaterMarkConfig *)waterMarkConfig;
+
+/**
+ * 清除水印文字，仅支持单目设备，不支持多目设备
+ * 该方法用于移除当前播放器上设置的所有水印文字
+ */
+- (void)clearWaterMarkFont;
+
+/**
+ * 水印截图，仅支持单目设备，不支持多目设备
+ * 耗时操作，需要在子线程中执行
+ *
+ * @param width 截图宽度
+ * @param height 截图高度
+ *
+ * @return 抓取的图片
+ */
+- (UIImage *)captureRenderPictureWithWidth:(int)width height:(int)height;
+
+/**
+ * 开始渲染录制文件，仅支持单目设备，不支持多目设备
+ * 该方法用于开始渲染指定的录制文件
+ *
+ * @param path 文件存储路径
+ * @return YES 表示成功，NO 表示失败
+ */
+- (BOOL)startRenderRecordWithPath:(NSString *)path;
+
+/**
+ * 停止渲染录制，仅支持单目设备，不支持多目设备
+ * 该方法用于停止当前的录制文件渲染
+ */
+- (void)stopRenderRecord:(void (^)(BOOL ret))complete;
 
 #pragma mark - 其他方法
 
 /**
  *  设置使用硬件解码器优先，需在startRealPlay之前调用；默认软解
+ *  建议开启，提升解密效率。设备出流分辨率越高，硬解速度越快。
  *
  *  @param HDPriority 是否硬解优先
  */
@@ -442,20 +547,6 @@ sd卡及云存储倍速回放接口
  * @return 1：软解 2：硬解 0：出错
  */
 - (int)getHDPriorityStatus;
-
-/**
- *  设置设备归属业务来源，需要在预览回放前调用  国标设备使用
- *
- *  @param bizType 类型       国标为 bizType='GB28181'
- */
-- (void)setBizType:(NSString *)bizType;
-
-/**
- *  平台id 国标设备使用
- *
- *  @param platformId 类型
-*/
-- (void)setPlatformId:(NSString *)platformId;
 
 /**
  * 获取播放组件内部的播放库的port
@@ -473,6 +564,7 @@ sd卡及云存储倍速回放接口
 
 /**
  *  直播画面抓图
+ *  耗时操作，需要在子线程中执行
  *
  *  @param quality 抓图质量（0～100）,数值越大图片质量越好，图片大小越大
  *
@@ -481,7 +573,18 @@ sd卡及云存储倍速回放接口
 - (UIImage *)capturePicture:(NSInteger)quality;
 
 /**
- * 获取当前取流方式：
+ *  直播画面抓图
+ *  耗时操作，需要在子线程中执行
+ *
+ *  @param quality 无效入参，传100即可
+ *  @param streamId 双目设备轨道，0：广角镜头画面轨道 1：云台镜头画面轨道
+ *
+ *  @return image
+ */
+- (UIImage *)capturePicture:(NSInteger)quality streamId:(int)streamId;
+
+/**
+ * 获取当前取流方式（耗时操作，需要在子线程中执行）
  *
  * @return 当前取流类型
  */
@@ -528,11 +631,80 @@ sd卡及云存储倍速回放接口
 - (void)setPlayerDisableP2P;
 
 /**
- * `EZOpenSDK.enableSDKWithTKToken`开启后，需要设置取流小权限token
+ * 是否开启自动清晰度网络检测开关；此api未调用时，不会回调以下消息 
+ * EZPlayer - EZMessageCode - PLAYER_VIDEO_LEVEL_AUTO_IMPROVE  网络好，会回调此消息，建议切换高一级清晰度
+ * EZPlayer - EZMessageCode - PLAYER_VIDEO_LEVEL_AUTO_REDUCE    网络差，会回调此消息，建议切换低一级清晰度
+ */
+- (void)enableDeviceAutoVideoLevel;
+
+/**
+ * 设置性能优先或画质优先，startRealPlay之前调用，播放前会先设置清晰度再发起取流，会增加首帧画面耗时
+ * 因为涉及到清晰度切换，取流成功后必须设置下清晰度UI
+ *
+ * @param videoQuality  视频质量，指定性能优先或画质优先
+ */
+- (void)setVideoQuality:(EZVideoQualityType)videoQuality;
+
+/**
+ * `EZOpenSDK.enableSDKWithTKToken`开启后，需要设置取流小权限token，startRealPlay之前调用
+ * 注意：
+ * 1、IPC设备对讲使用的是0通道，对讲streamToken生成请使用0通道
+ * 2、双目设备取流使用的是0通道，取流streamToken生成请使用0通道
  *
  * @param streamToken  取流小权限token
  */
 - (void)setStreamToken:(NSString *)streamToken;
+
+/**
+ * 设置播放画面的旋转角度，旋转90°、270°时需调整播放器的尺寸（只支持单目设备，不支持多目设备）
+ *
+ * @param rotationAngle  旋转角度
+ */
+- (BOOL)setPlayerViewRotation:(EZPlayerViewRotationAngle)rotationAngle;
+
+/**
+ * 设置电子放大区域
+ * 
+ * @param rect 电子放大区域
+ * @param streamId 双目设备轨道 0：广角镜头画面轨道 1：云台镜头画面轨道
+ */
+- (void)setDisplayRegionEx:(CGRect *)rect streamId:(int)streamId;
+
+#pragma mark - 海康专用接口
+
+/**
+ * 设置解析输出模式
+ * 在调用startRealPlay之前设置生效
+ *
+ * @param demuxModel 设置的模式，默认0；= 0 使用封装层断帧, = 1 设置编码层断帧, = 2 设置I帧前输出, = 3 同时设置编码层断帧和I帧前输出
+ * 0：默认
+ * 1：设置编码层断帧（使用场景：封装层断帧有异常的场景下可以使用编码层断帧）
+ * 2：设置I帧前输出（使用场景：一般在纯音频场景下使用）
+ * 3：同时设置编码层断帧和I帧前输出（使用场景：上述两种模式同时开启）
+ */
+- (void)setDemuxModel:(NSUInteger)demuxModel;
+
+/**
+ * 开启平滑播放，仅支持单目
+ * 在调用startRealPlay之前设置生效
+ *
+ * @param smoothPlayMode 平滑播放模式
+ */
+- (void)enableSmoothPlay:(EZSmoothPlayMode)smoothPlayMode;
+
+/**
+ * 开启纯音频播放，开启后不显示视频，仅播放音频
+ * 在调用startPlayback之前设置生效
+ */
+- (void)enablePureAudio;
+
+/**
+ * 设置该录像是否是从IPC SD卡中直查的，默认NO。YES：回放会从IPC进行取流，NO：回放会从NVR进行取流
+ * 在调用startPlayback之前设置
+ *
+ * @param isIPCRecordDirectQuery 是否是IPC直查录像
+ */
+- (void)setIPCRecordDirectQuery:(BOOL)isIPCRecordDirectQuery;
 
 #pragma mark - 鱼眼矫正模式
 

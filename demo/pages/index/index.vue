@@ -11,7 +11,8 @@
 		<input placeholder="请输入accessToken" :value="accessToken" @input="onAccessTokenChange" style="height: 32px;border: 1px solid #aaa;margin-bottom: 10px;" />
 		<view class="text-area">
 			<button style="margin-bottom: 10px;" type="primary" @click="navigateToVideoPlayer()">视频组件</button>
-			<button type="primary" @click="navigateToConfigWifi()">配网API</button>
+			<button style="margin-bottom: 10px;" type="primary" @click="navigateToConfigWifi()">配网API</button>
+			<button type="warn" @click="navigateToVideoTalk()">视频通话</button>
 		</view>
 	</view>
 </template>
@@ -23,8 +24,8 @@
 			return {
 				openApiServer: 'https://open.ys7.com',
 				openAuthApiServer: 'https://openauth.ys7.com',
-				appKey: '',      // 从萤石开放平台控制台获取
-				accessToken: ''  // 从萤石开放平台控制台获取
+				appKey: '26810f3acd794862b608b6cfbc32a6b8',      // 从萤石开放平台控制台获取
+				accessToken: 'at.1irltbroaine5siodcmpvmim3c6xxslm-1ow16vr2ks-0ru3f2c-vw1jykbcw'  // 从萤石开放平台控制台获取
 			}
 		},
 		onLaunch() {
@@ -63,31 +64,6 @@
 					return false;
 				}
 			},
-			navigateToVideoPlayerAndroid() {
-				if (uni.getSystemInfoSync().platform === 'android') {
-					if (this.openApiServer.length > 0 && this.openAuthApiServer.length > 0 && this.appKey.length > 0 && this.accessToken.length > 0) {
-						plugin.initUniOpenSDK({
-							"openApiServer": this.openApiServer,
-							"openAuthApiServer": this.openAuthApiServer,
-							"appKey": this.appKey,
-							"accessToken": this.accessToken
-						})
-						uni.navigateTo({
-							url: './androidsdk'
-						});
-					} else {
-						uni.showToast({
-							title: '请检查初始化参数',
-							icon: 'none'
-						})
-					}
-				} else {
-					uni.showModal({
-						title: 'SDK类型选择异常',
-						content: '当前为iOS系统，无法使用Android SDK'
-					})
-				}
-			},
 			navigateToVideoPlayer() {
 				if (this.isInit()) {
 					uni.navigateTo({
@@ -101,6 +77,11 @@
 						url: '../configWifi/index'
 					});
 				}
+			},
+			navigateToVideoTalk() {
+				uni.navigateTo({
+					url: '../videoTalk/index'
+				});
 			},
 		}
 	}

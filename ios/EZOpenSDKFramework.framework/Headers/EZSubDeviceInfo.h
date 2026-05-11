@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL isSupportPTZ;
 /// 是否支持放大
 @property (nonatomic) BOOL isSupportZoom;
-///是否支持提示音开关
+/// 是否支持麦克风声音开关设置
 @property (nonatomic) BOOL isSupportAudioOnOff;
 /// 是否支持中心镜像翻转
 @property (nonatomic) BOOL isSupportMirrorCenter;
@@ -35,6 +35,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL isSupportSDRecordDownload;
 /// 是否支持SD卡录像封面
 @property (nonatomic) BOOL isSupportSdCover;
+/// 是否支持多通道设备
+@property (nonatomic) BOOL isSupportMultiChannel;
+/// 是否支持自动清晰度
+@property (nonatomic) BOOL isSupportDeviceAutoVideolevel;
 
 /**
  * 根据位数获取设备能力集

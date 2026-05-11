@@ -12,6 +12,7 @@
 
 @class EZPlayer;
 @class EZDeviceInfo;
+@class EZDeviceRecordInfo;
 @class EZAccessToken;
 @class EZCameraInfo;
 @class EZDeviceVersion;
@@ -20,6 +21,7 @@
 @class EZDeviceUpgradeStatus;
 @class EZLeaveMessage;
 @class EZWiFiItemInfo, EZAPDevInfo, EZConfigTokenInfo;
+@class EZBWCheckResult;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -57,7 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)destoryLib;
 
 /**
- *  设置是否打印debug日志,需在初始化sdk之前调用
+ *  设置是否打印debug日志，需在初始化sdk之前调用
+ *  建议在debug下设置打印，release下设置不打印
  *
  *  @param enable 是否打印日志，默认关闭
  *
@@ -66,11 +69,23 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)setDebugLogEnable:(BOOL)enable;
 
 /**
- *  设置debug日志回调,需在初始化sdk之前调用
+ *  设置debug日志回调，需在初始化sdk之前调用
  *
  *  @param logCallback 日志回调
  */
 + (void)setDebugLogCallBack:(void(^)(NSString *logStr))logCallback;
+
+/**
+ *  设置是否缓存sdk中的码流文件，用于码流调试；打开后，每次取流都会将码流保存到沙盒中
+ *  在debug模式下设置开启，release下必须关闭或者删除，否则沙盒中会产生大量的码流文件，占用手机存储空间
+ *  视频码流路径：应用沙盒/Documents/ezopensdk/EZSavedStreamData
+ *  对讲码流路径：应用沙盒/Documents/ezopensdk/EZSavedIntercomData
+ *  录制码流路径：应用沙盒/tmp
+ *  @param enable 是否打开，默认NO
+ *
+ *  @return YES/NO
+ */
++ (BOOL)setDebugStreamEnable:(BOOL)enable;
 
 /**
  *  账户注销接口
@@ -149,8 +164,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  `EZOpenSDK - setHttpToken:` 设置非设备类小权限token（入参不含设备序列号、通道号的接口会使用httpToken）
  *  `EZOpenSDK - setDeviceTokenForDeviceSerial:deviceToken:` 设置设备类小权限token（入参含设备序列号、不包含通道号的接口会使用deviceToken）
  *  `EZOpenSDK - setDeviceTokenForDeviceSerial:cameraNo:deviceGlobalToken:deviceVideoToken:` 设置设备类通道级小权限token（入参包含设备序列号、通道号的接口会使用deviceGlobalToken 和 deviceVideoToken）
- *  `EZPlayer - setStreamToken:` 预览、对讲、回放设置取流小权限token
- *  `EZDeviceRecordDownloadTask - setStreamToken:`下载设置取流小权限token
+ *  `EZPlayer - setStreamToken:` 预览、对讲、SD卡录像回放设置取流小权限token；云存储录像回放使用的是ticket认证方式，SDK内部实现，无需设置小权限token
+ *  `EZDeviceRecordDownloadTask - setStreamToken:` SD卡录像下载设置取流小权限token
  *
  *  此开关打开后，以下接口不能使用
  *  `EZOpenSDK - setAccessToken:`
@@ -224,7 +239,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  一个页面存在多个视频使用最小的码流，没有子码流的话还是使用主码流
  *
  *  @param deviceSerial 设备序列号
- *  @param cameraNo     虚拟通道
+ *  @param cameraNo     通道号
  *  @param useSubStream   是否使用子码流
  *
  *  @return EZPlayer对象
@@ -253,6 +268,14 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)releasePlayer:(EZPlayer *)player;
 
 #pragma mark - 取流相关Api
+
+/**
+ *  设置是否支持内网直连取流，默认是支持的
+ *  内网直连取流可以降低转发取流的比例，当客户端和设备处于同一局域网下时，优先走内网直连
+ *
+ *  @param enable 内网直连是否开启
+ */
++ (void)enableDirectInner:(BOOL)enable;
 
 /**
  *  设置是否支持P2P取流，默认是不支持的
@@ -395,14 +418,56 @@ NS_ASSUME_NONNULL_BEGIN
                                             completion:(void (^)(NSArray *deviceRecords, NSError * __nullable error))completion;
 
 /**
+ *  查询远程SD卡存储录像信息列表接口
+ *
+ *  @param deviceSerial                   设备序列号
+ *  @param cameraNo                            通道号
+ *  @param beginTime                          查询时间范围开始时间
+ *  @param endTime                              查询时间范围结束时间
+ *  @param videoRecordTypeEx        录像类型扩展，一般传EZVideoRecordTypeExNone
+ *  @param isQueryFromNvr               当IPC设备绑定NVR后，是否反查NVR录像，YES：查询NVR录像，NO：不反查。一般传YES即可
+ *  @param videoRecordLocation    录像位置，一般传EZVideoRecordLocationLocal
+ *  @param pageSize                            分页的页面大小，最大200
+ *  @param completion                        回调block，正常时返回EZDeviceRecordInfo对象，错误时返回错误码
+ *
+ *  @return operation
+ */
++ (NSURLSessionDataTask *)searchRecordFileFromDeviceEx:(NSString *)deviceSerial
+                                              cameraNo:(NSInteger)cameraNo
+                                             beginTime:(NSDate *)beginTime
+                                               endTime:(NSDate *)endTime
+                                     videoRecordTypeEx:(EZVideoRecordTypeEx)videoRecordTypeEx
+                                        isQueryFromNvr:(BOOL)isQueryFromNvr
+                                   videoRecordLocation:(EZVideoRecordLocation)videoRecordLocation
+                                              pageSize:(NSInteger)pageSize
+                                            completion:(void (^)(EZDeviceRecordInfo *deviceRecordInfo, NSError * __nullable error))completion;
+
+/**
+ *  查询CVR中心录像信息列表接口
+ *
+ *  @param deviceSerial 设备序列号
+ *  @param cameraNo          通道号
+ *  @param beginTime        查询时间范围开始时间
+ *  @param endTime            查询时间范围结束时间
+ *  @param completion     回调block，正常时返回EZDeviceRecordFile的对象数组，错误时返回错误码
+ *
+ *  @return operation
+ */
++ (NSURLSessionDataTask *)searchRecordFileFromCVR:(NSString *)deviceSerial
+                                         cameraNo:(NSInteger)cameraNo
+                                        beginTime:(NSDate *)beginTime
+                                          endTime:(NSDate *)endTime
+                                       completion:(void (^)(NSArray *cvrRecords, NSError * __nullable error))completion;
+
+/**
  *  查询设备SDK云录制录像信息列表接口
  *
  *  @param deviceSerial 设备序列号
- *  @param cameraNo     通道号，传入<=0的值则为默认值
- *  @param beginTime    开始时间，传入nil则为当天00:00:00
- *  @param endTime      结束时间，传入nil则为当天23:59:59
- *  @param spaceId      录像空间
- *  @param completion   回调block records:EzvizRecordFileInfo的数组
+ *  @param cameraNo          通道号，传入<=0的值则为默认值
+ *  @param beginTime        查询时间范围开始时间
+ *  @param endTime            结束时间，传入nil则为当天23:59:59
+ *  @param spaceId            录像空间
+ *  @param completion     回调block，正常时返回EZCloudRecordFile的对象数组，错误时返回错误码
  *
  *  @return operation
  */
@@ -417,13 +482,13 @@ NS_ASSUME_NONNULL_BEGIN
  *  获取指定时间内的所有录像文件
  *
  *  @param deviceSerial 设备序列号
- *  @param cameraNo     通道号，传入<=0的值则为默认值
- *  @param beginTime    开始时间，传入nil则为当天00:00:00
- *  @param endTime      结束时间，传入nil则为当天23:59:59
- *  @param rectype      回放源，0-系统自动选择，1-云存储，2-本地录像，5-sdk。非必选，默认为0，传入负值则为默认值
- *  @param bizType       设备归属业务来源
- *  @param platFormId  平台ID
- *  @param completion   回调block records:EzvizRecordFileInfo的数组
+ *  @param cameraNo          通道号，传入<=0的值则为默认值
+ *  @param beginTime        查询时间范围开始时间
+ *  @param endTime            查询时间范围结束时间
+ *  @param rectype            回放源，0-系统自动选择，1-云存储，2-本地录像，5-sdk。非必选，默认为0，传入负值则为默认值
+ *  @param bizType            设备归属业务来源
+ *  @param platFormId      平台ID
+ *  @param completion      回调block，正常时返回EzvizRecordFileInfo的对象数组，错误时返回错误码
  *
  *  @return operation
  */
@@ -610,7 +675,7 @@ NS_ASSUME_NONNULL_BEGIN
                              completion:(void (^)(NSError * __nullable error))completion;
 
 /**
- *  获取抓取摄像头图片的url接口
+ *  获取抓取摄像头图片的url接口，需要设备支持，萤石设备一般都能支持此协议。(该功能和萤石云视频app首页刷新封面的功能一致)
  *
  *  @param deviceSerial 设备序列号
  *  @param cameraNo     通道号
@@ -639,6 +704,23 @@ NS_ASSUME_NONNULL_BEGIN
                                cameraNo:(NSInteger)cameraNo
                              videoLevel:(EZVideoLevelType)videoLevel
                              completion:(void (^)(NSError * __nullable error))completion;
+
+/**
+ *  设置设备通道的清晰度(非强制，两个及以上客户端同时在取流时无法设置，会返回失败)
+ *  录制过程中不能调用此接口，否则会导致录制视频异常
+ *
+ *  @param deviceSerial 设备序列号
+ *  @param cameraNo     通道号
+ *  @param videoLevel   通道清晰度，0-流畅，1-均衡，2-高清，3-超清，4-极清，5-3K，6-4K
+ *  @param completion   回调block，无error表示设置成功
+ *  @see 如果是正在播放时调用该接口，设置清晰度成功以后必须让EZPlayer调用stopRealPlay再调用startRealPlay重新取流才成完成画面清晰度的切换。
+ *
+ *  @return operation
+ */
++ (NSURLSessionDataTask *)setVideoLevelAuto:(NSString *)deviceSerial
+                                   cameraNo:(NSInteger)cameraNo
+                                 videoLevel:(EZVideoLevelType)videoLevel
+                                 completion:(void (^)(NSError * __nullable error))completion;
 
 /**
  *  设备设置布防状态，兼容A1和IPC设备的布防
@@ -784,7 +866,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSData *)decryptData:(NSData *)data verifyCode:(NSString *)verifyCode;
 
 /**
- *  告警图片解密方法，设备加密
+ *  告警图片解密方法，需指定设备加密 或 平台加密
  *
  *  @param data       需要解密的数据
  *  @param verifyCode 设备验证码
@@ -886,14 +968,76 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSOperation *)getLeaveMessageData:(EZLeaveMessage *)message
                           completion:(void (^)(NSData *data, NSInteger resultCode))completion DEPRECATED_MSG_ATTRIBUTE("service has been paused and cannot be used");
 
+#pragma mark - VideoTalk视频通话相关Api
+
+/**
+ *  呼叫设备进入房间进行视频通话
+ *  @param appId                                  ERTC AppId，不是AppKey
+ *  @param ertcToken                         ERTC 资源token
+ *  @param roomId                                房间号
+ *  @param deviceSerial                  设备序列号
+ *  @param cameraNo                           通道号
+ *  @param account                             联系人
+ *  @param completion                       回调block
+ *
+ *  @return operation
+ */
++ (NSURLSessionDataTask *)inviteDeviceEnterMeeting:(NSString *)appId
+                                         ertcToken:(NSString *)ertcToken
+                                            roomId:(NSString *)roomId
+                                      deviceSerial:(NSString *)deviceSerial
+                                          cameraNo:(NSInteger)cameraNo
+                                           account:(NSString *)account
+                                        completion:(void (^)(NSError *error))completion;
+
+/**
+ *  取消呼叫设备进入房间进行视频通话
+ *  @param appId                                  ERTC AppId，不是AppKey
+ *  @param ertcToken                         ERTC 资源token
+ *  @param roomId                                房间号
+ *  @param deviceSerial                  设备序列号
+ *  @param cameraNo                           通道号
+ *  @param account                             联系人
+ *  @param completion                       回调block
+ *
+ *  @return operation
+ */
++ (NSURLSessionDataTask *)cancelInviteDeviceEnterMeeting:(NSString *)appId
+                                               ertcToken:(NSString *)ertcToken
+                                                  roomId:(NSString *)roomId
+                                            deviceSerial:(NSString *)deviceSerial
+                                                cameraNo:(NSInteger)cameraNo
+                                                 account:(NSString *)account
+                                              completion:(void (^)(NSError *error))completion;
+
+/**
+ *  拒绝接听设备的视频通话请求
+ *  @param appId                                  ERTC AppId，不是AppKey
+ *  @param ertcToken                         ERTC 资源token
+ *  @param roomId                                房间号
+ *  @param deviceSerial                  设备序列号
+ *  @param cameraNo                           通道号
+ *  @param account                             联系人
+ *  @param completion                       回调block
+ *
+ *  @return operation
+ */
++ (NSURLSessionDataTask *)rejectVideoCallReqFromDevice:(NSString *)appId
+                                             ertcToken:(NSString *)ertcToken
+                                                roomId:(NSString *)roomId
+                                          deviceSerial:(NSString *)deviceSerial
+                                              cameraNo:(NSInteger)cameraNo
+                                               account:(NSString *)account
+                                            completion:(void (^)(NSError *error))completion;
+
 #pragma mark - WiFi配网相关Api
 
 /**
- *  尝试查询设备信息，设备Wifi配置前查询一次设备的信息
+ *  查询设备信息（用于添加设备之前, 简单查询设备信息，如是否在线，是否添加等）
  *
  *  @param deviceSerial 设备序列号
- *  @param deviceType 设备型号，无法获取到设备型号则可传nil
- *  @param completion   回调block，正常时返回EZProbeDeviceInfo对象，错误码返回错误码
+ *  @param deviceType     设备型号，无法获取到设备型号则可传nil
+ *  @param completion     回调block，正常时返回EZProbeDeviceInfo对象，错误码返回错误码
  *  @see 全新的设备是没有注册到平台的，所以会出现设备不存在的情况，设备wifi配置成功以后会上报数据到萤石云平台，以后每次查询就不会出现设备不存在的情况了。
  *
  *  @return operation
@@ -1004,30 +1148,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)stopAPConfigWifi;
 
-#pragma mark - EZLink配网相关Api
-
-/**
- * EZLink配网接口
- *
- * @param ssid WiFi的ssid
- * @param password WiFi的密码
- * @param deviceSerial 设备序列号
- * @param verifyCode 设备验证码
- * @param statusBlock 结果回调，返回配网过程中的各种状态
- *
- * @return 成功或失败
- */
-+ (BOOL)startAPLinkConfigWifiWithSsid:(NSString *)ssid
-                             password:(NSString *)password
-                         deviceSerial:(NSString *)deviceSerial
-                           verifyCode:(NSString *)verifyCode
-                         deviceStatus:(void (^)(EZWifiConfigStatus status, NSString *deviceSerial))statusBlock;
-
-/**
- * 停止EZLink配网
- */
-+ (void)stopAPLinkConfigWifi;
-
 #pragma mark - 接触式配网 New AP Config
 
 /**
@@ -1085,6 +1205,33 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)setDevRouteDomain:(NSString *)devRouteDomain;
 
+#pragma mark - 带宽检测
+
+/**
+ * 开始带宽检测
+ *
+ * @param bwCheckType 带宽检测类型，EZBWCheckType中列举的类型进行任意组合。
+ *      EZBWCheckClientUpward：只进行客户端上行检测
+ *      EZBWCheckClientDownward：只进行客户端下行检测
+ *      EZBWCheckClientUpward | EZBWCheckClientDownward：串行进行客户端上行和客户端下行检测，耗时为expireTime*2
+ * @param deviceSerial  设备序列号，可选。设置后检测客户端到设备机房的带宽
+ * @param cameraNo      通道号，默认1，可选。设置后检测客户端到设备机房的带宽
+ * @param checkTime     最大带宽测试时长、取值区间【15s~30s】
+ * @param bwCheckToken  带宽检测token，必填
+ * @param completion      带宽检测结果回调
+ */
++ (void)startBWCheck:(EZBWCheckType)bwCheckType
+        deviceSerial:(NSString *)deviceSerial
+            cameraNo:(NSInteger)cameraNo
+           checkTime:(NSInteger)checkTime
+        bwCheckToken:(NSString *)bwCheckToken
+          completion:(void (^)(EZBWCheckResult *result, NSError * __nullable error))completion;
+
+/**
+ * 停止带宽检测
+ */
++ (void)stopBWCheck;
+
 #pragma mark - 用户相关Api
 
 /**
@@ -1112,6 +1259,24 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param completion 回调block
  */
 + (void)uploadSDKCloudRecordImage:(NSData *)imageData completion:(void (^)(NSString *storageId, NSError *error))completion;
+
+#pragma mark - 海康专用Api
+
+/**
+ *  设置SDK中的XLog是否可用，需在初始化sdk之前调用
+ *
+ *  @param enable 是否可用，默认可用
+ *
+ *  @return YES/NO
+ */
++ (BOOL)setXLogEnable:(BOOL)enable;
+
+/**
+ *  设置研究院播放库日志级别，需在初始化sdk之前调用；默认为2:INFO
+ *
+ *  @param logLevel 日志级别  1:DEBUG  2:INFO：3:WARN：4:ERROR
+ */
++ (void)setPlayCtrlLogLevel:(int)logLevel;
 
 @end
 

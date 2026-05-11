@@ -1,8 +1,8 @@
 (this["webpackJsonp"] = this["webpackJsonp"] || []).push([["app-service"],[
 /* 0 */
-/*!************************************!*\
-  !*** E:/UniEzOpenSDK/demo/main.js ***!
-  \************************************/
+/*!*********************************************************!*\
+  !*** E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/main.js ***!
+  \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -107,9 +107,9 @@ module.exports = toPrimitive, module.exports.__esModule = true, module.exports["
 
 /***/ }),
 /* 6 */
-/*!***************************************!*\
-  !*** E:/UniEzOpenSDK/demo/pages.json ***!
-  \***************************************/
+/*!************************************************************!*\
+  !*** E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages.json ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -154,9 +154,9 @@ __definePage('pages/configWifi/index', function () {
 
 /***/ }),
 /* 7 */
-/*!**************************************************************!*\
-  !*** E:/UniEzOpenSDK/demo/pages/index/index.vue?mpType=page ***!
-  \**************************************************************/
+/*!***********************************************************************************!*\
+  !*** E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages/index/index.vue?mpType=page ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -165,9 +165,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _ind
 
 /***/ }),
 /* 8 */
-/*!********************************************************************************************!*\
-  !*** E:/UniEzOpenSDK/demo/pages/index/index.vue?vue&type=template&id=2be84a3c&mpType=page ***!
-  \********************************************************************************************/
+/*!*****************************************************************************************************************!*\
+  !*** E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages/index/index.vue?vue&type=template&id=2be84a3c&mpType=page ***!
+  \*****************************************************************************************************************/
 /*! exports provided: render, staticRenderFns, recyclableRender, components */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -186,9 +186,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 /* 9 */
-/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--11-0!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/filter-modules-template.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!E:/UniEzOpenSDK/demo/pages/index/index.vue?vue&type=template&id=2be84a3c&mpType=page ***!
-  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--11-0!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/filter-modules-template.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages/index/index.vue?vue&type=template&id=2be84a3c&mpType=page ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns, recyclableRender, components */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -248,6 +248,14 @@ var render = function () {
               },
             },
           }),
+          _c("button", {
+            attrs: { _i: 13 },
+            on: {
+              click: function ($event) {
+                return _vm.navigateToVideoTalk()
+              },
+            },
+          }),
         ]
       ),
     ]
@@ -261,9 +269,9 @@ render._withStripped = true
 
 /***/ }),
 /* 10 */
-/*!**************************************************************************************!*\
-  !*** E:/UniEzOpenSDK/demo/pages/index/index.vue?vue&type=script&lang=js&mpType=page ***!
-  \**************************************************************************************/
+/*!***********************************************************************************************************!*\
+  !*** E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages/index/index.vue?vue&type=script&lang=js&mpType=page ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -272,14 +280,14 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _D_H
 
 /***/ }),
 /* 11 */
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--7-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/using-components.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!E:/UniEzOpenSDK/demo/pages/index/index.vue?vue&type=script&lang=js&mpType=page ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--7-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/using-components.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages/index/index.vue?vue&type=script&lang=js&mpType=page ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n\nvar plugin = uni.requireNativePlugin('super_ezviz');\nvar _default = {\n  data: function data() {\n    return {\n      openApiServer: 'https://open.ys7.com',\n      openAuthApiServer: 'https://openauth.ys7.com',\n      appKey: '',\n      // 从萤石开放平台控制台获取\n      accessToken: '' // 从萤石开放平台控制台获取\n    };\n  },\n  onLaunch: function onLaunch() {\n    uni.addNativePlugin('EzvizApplication', this.onNativePluginReady);\n  },\n  onLoad: function onLoad() {},\n  methods: {\n    onOpenApiServerChange: function onOpenApiServerChange(e) {\n      this.openApiServer = e.detail.value;\n    },\n    onOpenAuthApiServerChange: function onOpenAuthApiServerChange(e) {\n      this.openAuthApiServer = e.detail.value;\n    },\n    onAppKeyChange: function onAppKeyChange(e) {\n      this.appKey = e.detail.value;\n    },\n    onAccessTokenChange: function onAccessTokenChange(e) {\n      this.accessToken = e.detail.value;\n    },\n    isInit: function isInit() {\n      if (this.openApiServer.length > 0 && this.openAuthApiServer.length > 0 && this.appKey.length > 0 && this.accessToken.length > 0) {\n        plugin.initUniOpenSDK({\n          \"openApiServer\": this.openApiServer,\n          \"openAuthApiServer\": this.openAuthApiServer,\n          \"appKey\": this.appKey,\n          \"accessToken\": this.accessToken\n        });\n        return true;\n      } else {\n        uni.showToast({\n          title: '请检查初始化参数',\n          icon: 'none'\n        });\n        return false;\n      }\n    },\n    navigateToVideoPlayerAndroid: function navigateToVideoPlayerAndroid() {\n      if (uni.getSystemInfoSync().platform === 'android') {\n        if (this.openApiServer.length > 0 && this.openAuthApiServer.length > 0 && this.appKey.length > 0 && this.accessToken.length > 0) {\n          plugin.initUniOpenSDK({\n            \"openApiServer\": this.openApiServer,\n            \"openAuthApiServer\": this.openAuthApiServer,\n            \"appKey\": this.appKey,\n            \"accessToken\": this.accessToken\n          });\n          uni.navigateTo({\n            url: './androidsdk'\n          });\n        } else {\n          uni.showToast({\n            title: '请检查初始化参数',\n            icon: 'none'\n          });\n        }\n      } else {\n        uni.showModal({\n          title: 'SDK类型选择异常',\n          content: '当前为iOS系统，无法使用Android SDK'\n        });\n      }\n    },\n    navigateToVideoPlayer: function navigateToVideoPlayer() {\n      if (this.isInit()) {\n        uni.navigateTo({\n          url: './sdk'\n        });\n      }\n    },\n    navigateToConfigWifi: function navigateToConfigWifi() {\n      if (this.isInit()) {\n        uni.navigateTo({\n          url: '../configWifi/index'\n        });\n      }\n    }\n  }\n};\nexports.default = _default;//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInVuaS1hcHA6Ly8vcGFnZXMvaW5kZXgvaW5kZXgudnVlIl0sIm5hbWVzIjpbInBsdWdpbiIsInVuaSIsInJlcXVpcmVOYXRpdmVQbHVnaW4iLCJkYXRhIiwib3BlbkFwaVNlcnZlciIsIm9wZW5BdXRoQXBpU2VydmVyIiwiYXBwS2V5IiwiYWNjZXNzVG9rZW4iLCJvbkxhdW5jaCIsImFkZE5hdGl2ZVBsdWdpbiIsIm9uTmF0aXZlUGx1Z2luUmVhZHkiLCJvbkxvYWQiLCJtZXRob2RzIiwib25PcGVuQXBpU2VydmVyQ2hhbmdlIiwiZSIsImRldGFpbCIsInZhbHVlIiwib25PcGVuQXV0aEFwaVNlcnZlckNoYW5nZSIsIm9uQXBwS2V5Q2hhbmdlIiwib25BY2Nlc3NUb2tlbkNoYW5nZSIsImlzSW5pdCIsImxlbmd0aCIsImluaXRVbmlPcGVuU0RLIiwic2hvd1RvYXN0IiwidGl0bGUiLCJpY29uIiwibmF2aWdhdGVUb1ZpZGVvUGxheWVyQW5kcm9pZCIsImdldFN5c3RlbUluZm9TeW5jIiwicGxhdGZvcm0iLCJuYXZpZ2F0ZVRvIiwidXJsIiwic2hvd01vZGFsIiwiY29udGVudCIsIm5hdmlnYXRlVG9WaWRlb1BsYXllciIsIm5hdmlnYXRlVG9Db25maWdXaWZpIl0sIm1hcHBpbmdzIjoiOzs7Ozs7QUFBQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUEsSUFBTUEsTUFBTSxHQUFHQyxHQUFHLENBQUNDLG1CQUFtQixDQUFDLGFBQWEsQ0FBQztBQUFDLGVBQ3ZDO0VBQ2RDLElBQUksa0JBQUc7SUFDTixPQUFPO01BQ05DLGFBQWEsRUFBRSxzQkFBc0I7TUFDckNDLGlCQUFpQixFQUFFLDBCQUEwQjtNQUM3Q0MsTUFBTSxFQUFFLEVBQUU7TUFBTztNQUNqQkMsV0FBVyxFQUFFLEVBQUUsQ0FBRTtJQUNsQixDQUFDO0VBQ0YsQ0FBQztFQUNEQyxRQUFRLHNCQUFHO0lBQ1ZQLEdBQUcsQ0FBQ1EsZUFBZSxDQUFDLGtCQUFrQixFQUFFLElBQUksQ0FBQ0MsbUJBQW1CLENBQUM7RUFDbEUsQ0FBQztFQUNEQyxNQUFNLG9CQUFHLENBRVQsQ0FBQztFQUNEQyxPQUFPLEVBQUU7SUFDUkMscUJBQXFCLGlDQUFDQyxDQUFDLEVBQUU7TUFDeEIsSUFBSSxDQUFDVixhQUFhLEdBQUdVLENBQUMsQ0FBQ0MsTUFBTSxDQUFDQyxLQUFLO0lBQ3BDLENBQUM7SUFDREMseUJBQXlCLHFDQUFDSCxDQUFDLEVBQUU7TUFDNUIsSUFBSSxDQUFDVCxpQkFBaUIsR0FBR1MsQ0FBQyxDQUFDQyxNQUFNLENBQUNDLEtBQUs7SUFDeEMsQ0FBQztJQUNERSxjQUFjLDBCQUFDSixDQUFDLEVBQUU7TUFDakIsSUFBSSxDQUFDUixNQUFNLEdBQUdRLENBQUMsQ0FBQ0MsTUFBTSxDQUFDQyxLQUFLO0lBQzdCLENBQUM7SUFDREcsbUJBQW1CLCtCQUFDTCxDQUFDLEVBQUU7TUFDdEIsSUFBSSxDQUFDUCxXQUFXLEdBQUdPLENBQUMsQ0FBQ0MsTUFBTSxDQUFDQyxLQUFLO0lBQ2xDLENBQUM7SUFDREksTUFBTSxvQkFBRztNQUNSLElBQUksSUFBSSxDQUFDaEIsYUFBYSxDQUFDaUIsTUFBTSxHQUFHLENBQUMsSUFBSSxJQUFJLENBQUNoQixpQkFBaUIsQ0FBQ2dCLE1BQU0sR0FBRyxDQUFDLElBQUksSUFBSSxDQUFDZixNQUFNLENBQUNlLE1BQU0sR0FBRyxDQUFDLElBQUksSUFBSSxDQUFDZCxXQUFXLENBQUNjLE1BQU0sR0FBRyxDQUFDLEVBQUU7UUFDaElyQixNQUFNLENBQUNzQixjQUFjLENBQUM7VUFDckIsZUFBZSxFQUFFLElBQUksQ0FBQ2xCLGFBQWE7VUFDbkMsbUJBQW1CLEVBQUUsSUFBSSxDQUFDQyxpQkFBaUI7VUFDM0MsUUFBUSxFQUFFLElBQUksQ0FBQ0MsTUFBTTtVQUNyQixhQUFhLEVBQUUsSUFBSSxDQUFDQztRQUNyQixDQUFDLENBQUM7UUFDRixPQUFPLElBQUk7TUFDWixDQUFDLE1BQU07UUFDTk4sR0FBRyxDQUFDc0IsU0FBUyxDQUFDO1VBQ2JDLEtBQUssRUFBRSxVQUFVO1VBQ2pCQyxJQUFJLEVBQUU7UUFDUCxDQUFDLENBQUM7UUFDRixPQUFPLEtBQUs7TUFDYjtJQUNELENBQUM7SUFDREMsNEJBQTRCLDBDQUFHO01BQzlCLElBQUl6QixHQUFHLENBQUMwQixpQkFBaUIsRUFBRSxDQUFDQyxRQUFRLEtBQUssU0FBUyxFQUFFO1FBQ25ELElBQUksSUFBSSxDQUFDeEIsYUFBYSxDQUFDaUIsTUFBTSxHQUFHLENBQUMsSUFBSSxJQUFJLENBQUNoQixpQkFBaUIsQ0FBQ2dCLE1BQU0sR0FBRyxDQUFDLElBQUksSUFBSSxDQUFDZixNQUFNLENBQUNlLE1BQU0sR0FBRyxDQUFDLElBQUksSUFBSSxDQUFDZCxXQUFXLENBQUNjLE1BQU0sR0FBRyxDQUFDLEVBQUU7VUFDaElyQixNQUFNLENBQUNzQixjQUFjLENBQUM7WUFDckIsZUFBZSxFQUFFLElBQUksQ0FBQ2xCLGFBQWE7WUFDbkMsbUJBQW1CLEVBQUUsSUFBSSxDQUFDQyxpQkFBaUI7WUFDM0MsUUFBUSxFQUFFLElBQUksQ0FBQ0MsTUFBTTtZQUNyQixhQUFhLEVBQUUsSUFBSSxDQUFDQztVQUNyQixDQUFDLENBQUM7VUFDRk4sR0FBRyxDQUFDNEIsVUFBVSxDQUFDO1lBQ2RDLEdBQUcsRUFBRTtVQUNOLENBQUMsQ0FBQztRQUNILENBQUMsTUFBTTtVQUNON0IsR0FBRyxDQUFDc0IsU0FBUyxDQUFDO1lBQ2JDLEtBQUssRUFBRSxVQUFVO1lBQ2pCQyxJQUFJLEVBQUU7VUFDUCxDQUFDLENBQUM7UUFDSDtNQUNELENBQUMsTUFBTTtRQUNOeEIsR0FBRyxDQUFDOEIsU0FBUyxDQUFDO1VBQ2JQLEtBQUssRUFBRSxXQUFXO1VBQ2xCUSxPQUFPLEVBQUU7UUFDVixDQUFDLENBQUM7TUFDSDtJQUNELENBQUM7SUFDREMscUJBQXFCLG1DQUFHO01BQ3ZCLElBQUksSUFBSSxDQUFDYixNQUFNLEVBQUUsRUFBRTtRQUNsQm5CLEdBQUcsQ0FBQzRCLFVBQVUsQ0FBQztVQUNkQyxHQUFHLEVBQUU7UUFDTixDQUFDLENBQUM7TUFDSDtJQUNELENBQUM7SUFDREksb0JBQW9CLGtDQUFHO01BQ3RCLElBQUksSUFBSSxDQUFDZCxNQUFNLEVBQUUsRUFBRTtRQUNsQm5CLEdBQUcsQ0FBQzRCLFVBQVUsQ0FBQztVQUNkQyxHQUFHLEVBQUU7UUFDTixDQUFDLENBQUM7TUFDSDtJQUNEO0VBQ0Q7QUFDRCxDQUFDO0FBQUEiLCJmaWxlIjoiMTEuanMiLCJzb3VyY2VzQ29udGVudCI6WyIvL1xuLy9cbi8vXG4vL1xuLy9cbi8vXG4vL1xuLy9cbi8vXG4vL1xuLy9cbi8vXG4vL1xuLy9cbi8vXG4vL1xuLy9cbi8vXG5cbmNvbnN0IHBsdWdpbiA9IHVuaS5yZXF1aXJlTmF0aXZlUGx1Z2luKCdzdXBlcl9lenZpeicpO1xuZXhwb3J0IGRlZmF1bHQge1xuXHRkYXRhKCkge1xuXHRcdHJldHVybiB7XG5cdFx0XHRvcGVuQXBpU2VydmVyOiAnaHR0cHM6Ly9vcGVuLnlzNy5jb20nLFxuXHRcdFx0b3BlbkF1dGhBcGlTZXJ2ZXI6ICdodHRwczovL29wZW5hdXRoLnlzNy5jb20nLFxuXHRcdFx0YXBwS2V5OiAnJywgICAgICAvLyDku47okKTnn7PlvIDmlL7lubPlj7DmjqfliLblj7Dojrflj5Zcblx0XHRcdGFjY2Vzc1Rva2VuOiAnJyAgLy8g5LuO6JCk55+z5byA5pS+5bmz5Y+w5o6n5Yi25Y+w6I635Y+WXG5cdFx0fVxuXHR9LFxuXHRvbkxhdW5jaCgpIHtcblx0XHR1bmkuYWRkTmF0aXZlUGx1Z2luKCdFenZpekFwcGxpY2F0aW9uJywgdGhpcy5vbk5hdGl2ZVBsdWdpblJlYWR5KTtcblx0fSxcblx0b25Mb2FkKCkge1xuXG5cdH0sXG5cdG1ldGhvZHM6IHtcblx0XHRvbk9wZW5BcGlTZXJ2ZXJDaGFuZ2UoZSkge1xuXHRcdFx0dGhpcy5vcGVuQXBpU2VydmVyID0gZS5kZXRhaWwudmFsdWU7XG5cdFx0fSxcblx0XHRvbk9wZW5BdXRoQXBpU2VydmVyQ2hhbmdlKGUpIHtcblx0XHRcdHRoaXMub3BlbkF1dGhBcGlTZXJ2ZXIgPSBlLmRldGFpbC52YWx1ZTtcblx0XHR9LFxuXHRcdG9uQXBwS2V5Q2hhbmdlKGUpIHtcblx0XHRcdHRoaXMuYXBwS2V5ID0gZS5kZXRhaWwudmFsdWU7XG5cdFx0fSxcblx0XHRvbkFjY2Vzc1Rva2VuQ2hhbmdlKGUpIHtcblx0XHRcdHRoaXMuYWNjZXNzVG9rZW4gPSBlLmRldGFpbC52YWx1ZTtcblx0XHR9LFxuXHRcdGlzSW5pdCgpIHtcblx0XHRcdGlmICh0aGlzLm9wZW5BcGlTZXJ2ZXIubGVuZ3RoID4gMCAmJiB0aGlzLm9wZW5BdXRoQXBpU2VydmVyLmxlbmd0aCA+IDAgJiYgdGhpcy5hcHBLZXkubGVuZ3RoID4gMCAmJiB0aGlzLmFjY2Vzc1Rva2VuLmxlbmd0aCA+IDApIHtcblx0XHRcdFx0cGx1Z2luLmluaXRVbmlPcGVuU0RLKHtcblx0XHRcdFx0XHRcIm9wZW5BcGlTZXJ2ZXJcIjogdGhpcy5vcGVuQXBpU2VydmVyLFxuXHRcdFx0XHRcdFwib3BlbkF1dGhBcGlTZXJ2ZXJcIjogdGhpcy5vcGVuQXV0aEFwaVNlcnZlcixcblx0XHRcdFx0XHRcImFwcEtleVwiOiB0aGlzLmFwcEtleSxcblx0XHRcdFx0XHRcImFjY2Vzc1Rva2VuXCI6IHRoaXMuYWNjZXNzVG9rZW5cblx0XHRcdFx0fSk7XG5cdFx0XHRcdHJldHVybiB0cnVlO1xuXHRcdFx0fSBlbHNlIHtcblx0XHRcdFx0dW5pLnNob3dUb2FzdCh7XG5cdFx0XHRcdFx0dGl0bGU6ICfor7fmo4Dmn6XliJ3lp4vljJblj4LmlbAnLFxuXHRcdFx0XHRcdGljb246ICdub25lJ1xuXHRcdFx0XHR9KTtcblx0XHRcdFx0cmV0dXJuIGZhbHNlO1xuXHRcdFx0fVxuXHRcdH0sXG5cdFx0bmF2aWdhdGVUb1ZpZGVvUGxheWVyQW5kcm9pZCgpIHtcblx0XHRcdGlmICh1bmkuZ2V0U3lzdGVtSW5mb1N5bmMoKS5wbGF0Zm9ybSA9PT0gJ2FuZHJvaWQnKSB7XG5cdFx0XHRcdGlmICh0aGlzLm9wZW5BcGlTZXJ2ZXIubGVuZ3RoID4gMCAmJiB0aGlzLm9wZW5BdXRoQXBpU2VydmVyLmxlbmd0aCA+IDAgJiYgdGhpcy5hcHBLZXkubGVuZ3RoID4gMCAmJiB0aGlzLmFjY2Vzc1Rva2VuLmxlbmd0aCA+IDApIHtcblx0XHRcdFx0XHRwbHVnaW4uaW5pdFVuaU9wZW5TREsoe1xuXHRcdFx0XHRcdFx0XCJvcGVuQXBpU2VydmVyXCI6IHRoaXMub3BlbkFwaVNlcnZlcixcblx0XHRcdFx0XHRcdFwib3BlbkF1dGhBcGlTZXJ2ZXJcIjogdGhpcy5vcGVuQXV0aEFwaVNlcnZlcixcblx0XHRcdFx0XHRcdFwiYXBwS2V5XCI6IHRoaXMuYXBwS2V5LFxuXHRcdFx0XHRcdFx0XCJhY2Nlc3NUb2tlblwiOiB0aGlzLmFjY2Vzc1Rva2VuXG5cdFx0XHRcdFx0fSlcblx0XHRcdFx0XHR1bmkubmF2aWdhdGVUbyh7XG5cdFx0XHRcdFx0XHR1cmw6ICcuL2FuZHJvaWRzZGsnXG5cdFx0XHRcdFx0fSk7XG5cdFx0XHRcdH0gZWxzZSB7XG5cdFx0XHRcdFx0dW5pLnNob3dUb2FzdCh7XG5cdFx0XHRcdFx0XHR0aXRsZTogJ+ivt+ajgOafpeWIneWni+WMluWPguaVsCcsXG5cdFx0XHRcdFx0XHRpY29uOiAnbm9uZSdcblx0XHRcdFx0XHR9KVxuXHRcdFx0XHR9XG5cdFx0XHR9IGVsc2Uge1xuXHRcdFx0XHR1bmkuc2hvd01vZGFsKHtcblx0XHRcdFx0XHR0aXRsZTogJ1NES+exu+Wei+mAieaLqeW8guW4uCcsXG5cdFx0XHRcdFx0Y29udGVudDogJ+W9k+WJjeS4umlPU+ezu+e7n++8jOaXoOazleS9v+eUqEFuZHJvaWQgU0RLJ1xuXHRcdFx0XHR9KVxuXHRcdFx0fVxuXHRcdH0sXG5cdFx0bmF2aWdhdGVUb1ZpZGVvUGxheWVyKCkge1xuXHRcdFx0aWYgKHRoaXMuaXNJbml0KCkpIHtcblx0XHRcdFx0dW5pLm5hdmlnYXRlVG8oe1xuXHRcdFx0XHRcdHVybDogJy4vc2RrJ1xuXHRcdFx0XHR9KTtcblx0XHRcdH1cblx0XHR9LFxuXHRcdG5hdmlnYXRlVG9Db25maWdXaWZpKCkge1xuXHRcdFx0aWYgKHRoaXMuaXNJbml0KCkpIHtcblx0XHRcdFx0dW5pLm5hdmlnYXRlVG8oe1xuXHRcdFx0XHRcdHVybDogJy4uL2NvbmZpZ1dpZmkvaW5kZXgnXG5cdFx0XHRcdH0pO1xuXHRcdFx0fVxuXHRcdH0sXG5cdH1cbn1cbiJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///11\n");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n\nvar plugin = uni.requireNativePlugin('super_ezviz');\nvar _default = {\n  data: function data() {\n    return {\n      openApiServer: 'https://open.ys7.com',\n      openAuthApiServer: 'https://openauth.ys7.com',\n      appKey: '26810f3acd794862b608b6cfbc32a6b8',\n      // 从萤石开放平台控制台获取\n      accessToken: 'at.1irltbroaine5siodcmpvmim3c6xxslm-1ow16vr2ks-0ru3f2c-vw1jykbcw' // 从萤石开放平台控制台获取\n    };\n  },\n  onLaunch: function onLaunch() {\n    uni.addNativePlugin('EzvizApplication', this.onNativePluginReady);\n  },\n  onLoad: function onLoad() {},\n  methods: {\n    onOpenApiServerChange: function onOpenApiServerChange(e) {\n      this.openApiServer = e.detail.value;\n    },\n    onOpenAuthApiServerChange: function onOpenAuthApiServerChange(e) {\n      this.openAuthApiServer = e.detail.value;\n    },\n    onAppKeyChange: function onAppKeyChange(e) {\n      this.appKey = e.detail.value;\n    },\n    onAccessTokenChange: function onAccessTokenChange(e) {\n      this.accessToken = e.detail.value;\n    },\n    isInit: function isInit() {\n      if (this.openApiServer.length > 0 && this.openAuthApiServer.length > 0 && this.appKey.length > 0 && this.accessToken.length > 0) {\n        plugin.initUniOpenSDK({\n          \"openApiServer\": this.openApiServer,\n          \"openAuthApiServer\": this.openAuthApiServer,\n          \"appKey\": this.appKey,\n          \"accessToken\": this.accessToken\n        });\n        return true;\n      } else {\n        uni.showToast({\n          title: '请检查初始化参数',\n          icon: 'none'\n        });\n        return false;\n      }\n    },\n    navigateToVideoPlayer: function navigateToVideoPlayer() {\n      if (this.isInit()) {\n        uni.navigateTo({\n          url: './sdk'\n        });\n      }\n    },\n    navigateToConfigWifi: function navigateToConfigWifi() {\n      if (this.isInit()) {\n        uni.navigateTo({\n          url: '../configWifi/index'\n        });\n      }\n    },\n    navigateToVideoTalk: function navigateToVideoTalk() {\n      uni.navigateTo({\n        url: '../videoTalk/index'\n      });\n    }\n  }\n};\nexports.default = _default;//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInVuaS1hcHA6Ly8vcGFnZXMvaW5kZXgvaW5kZXgudnVlIl0sIm5hbWVzIjpbImRhdGEiLCJvcGVuQXBpU2VydmVyIiwib3BlbkF1dGhBcGlTZXJ2ZXIiLCJhcHBLZXkiLCJhY2Nlc3NUb2tlbiIsIm9uTGF1bmNoIiwidW5pIiwib25Mb2FkIiwibWV0aG9kcyIsIm9uT3BlbkFwaVNlcnZlckNoYW5nZSIsIm9uT3BlbkF1dGhBcGlTZXJ2ZXJDaGFuZ2UiLCJvbkFwcEtleUNoYW5nZSIsIm9uQWNjZXNzVG9rZW5DaGFuZ2UiLCJpc0luaXQiLCJwbHVnaW4iLCJ0aXRsZSIsImljb24iLCJuYXZpZ2F0ZVRvVmlkZW9QbGF5ZXIiLCJ1cmwiLCJuYXZpZ2F0ZVRvQ29uZmlnV2lmaSIsIm5hdmlnYXRlVG9WaWRlb1RhbGsiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBb0JBO0FBQUEsZUFDQTtFQUNBQTtJQUNBO01BQ0FDO01BQ0FDO01BQ0FDO01BQUE7TUFDQUM7SUFDQTtFQUNBO0VBQ0FDO0lBQ0FDO0VBQ0E7RUFDQUMsMkJBRUE7RUFDQUM7SUFDQUM7TUFDQTtJQUNBO0lBQ0FDO01BQ0E7SUFDQTtJQUNBQztNQUNBO0lBQ0E7SUFDQUM7TUFDQTtJQUNBO0lBQ0FDO01BQ0E7UUFDQUM7VUFDQTtVQUNBO1VBQ0E7VUFDQTtRQUNBO1FBQ0E7TUFDQTtRQUNBUjtVQUNBUztVQUNBQztRQUNBO1FBQ0E7TUFDQTtJQUNBO0lBQ0FDO01BQ0E7UUFDQVg7VUFDQVk7UUFDQTtNQUNBO0lBQ0E7SUFDQUM7TUFDQTtRQUNBYjtVQUNBWTtRQUNBO01BQ0E7SUFDQTtJQUNBRTtNQUNBZDtRQUNBWTtNQUNBO0lBQ0E7RUFDQTtBQUNBO0FBQUEiLCJmaWxlIjoiMTEuanMiLCJzb3VyY2VzQ29udGVudCI6WyI8dGVtcGxhdGU+XG5cdDx2aWV3IGNsYXNzPVwiY29udGVudFwiPlxuXHRcdDxpbWFnZSBjbGFzcz1cImxvZ29cIiBzcmM9XCIvc3RhdGljL2xvZ28ucG5nXCI+PC9pbWFnZT5cblx0XHQ8dGV4dD7mnI3liqHlnLDlnYA8L3RleHQ+XG5cdFx0PGlucHV0IHBsYWNlaG9sZGVyPVwi6K+36L6T5YWl5pyN5Yqh6K+35rGC5Zyw5Z2AXCIgOnZhbHVlPVwib3BlbkFwaVNlcnZlclwiIEBpbnB1dD1cIm9uT3BlbkFwaVNlcnZlckNoYW5nZVwiIHN0eWxlPVwiaGVpZ2h0OiAzMnB4O2JvcmRlcjogMXB4IHNvbGlkICNhYWE7bWFyZ2luLWJvdHRvbTogMTBweDtcIiAvPlxuXHRcdDx0ZXh0PmF1dGjorqTor4HlnLDlnYA8L3RleHQ+XG5cdFx0PGlucHV0IHBsYWNlaG9sZGVyPVwi6K+36L6T5YWlYXV0aOiupOivgeivt+axguWcsOWdgFwiIDp2YWx1ZT1cIm9wZW5BdXRoQXBpU2VydmVyXCIgQGlucHV0PVwib25PcGVuQXV0aEFwaVNlcnZlckNoYW5nZVwiIHN0eWxlPVwiaGVpZ2h0OiAzMnB4O2JvcmRlcjogMXB4IHNvbGlkICNhYWE7bWFyZ2luLWJvdHRvbTogMTBweDtcIiAvPlxuXHRcdDx0ZXh0PmFwcGtleTwvdGV4dD5cblx0XHQ8aW5wdXQgcGxhY2Vob2xkZXI9XCLor7fovpPlhaVhcHBrZXlcIiA6dmFsdWU9XCJhcHBLZXlcIiBAaW5wdXQ9XCJvbkFwcEtleUNoYW5nZVwiIHN0eWxlPVwiaGVpZ2h0OiAzMnB4O2JvcmRlcjogMXB4IHNvbGlkICNhYWE7bWFyZ2luLWJvdHRvbTogMTBweDtcIiAvPlxuXHRcdDx0ZXh0PmFjY2Vzc1Rva2VuPC90ZXh0PlxuXHRcdDxpbnB1dCBwbGFjZWhvbGRlcj1cIuivt+i+k+WFpWFjY2Vzc1Rva2VuXCIgOnZhbHVlPVwiYWNjZXNzVG9rZW5cIiBAaW5wdXQ9XCJvbkFjY2Vzc1Rva2VuQ2hhbmdlXCIgc3R5bGU9XCJoZWlnaHQ6IDMycHg7Ym9yZGVyOiAxcHggc29saWQgI2FhYTttYXJnaW4tYm90dG9tOiAxMHB4O1wiIC8+XG5cdFx0PHZpZXcgY2xhc3M9XCJ0ZXh0LWFyZWFcIj5cblx0XHRcdDxidXR0b24gc3R5bGU9XCJtYXJnaW4tYm90dG9tOiAxMHB4O1wiIHR5cGU9XCJwcmltYXJ5XCIgQGNsaWNrPVwibmF2aWdhdGVUb1ZpZGVvUGxheWVyKClcIj7op4bpopHnu4Tku7Y8L2J1dHRvbj5cblx0XHRcdDxidXR0b24gc3R5bGU9XCJtYXJnaW4tYm90dG9tOiAxMHB4O1wiIHR5cGU9XCJwcmltYXJ5XCIgQGNsaWNrPVwibmF2aWdhdGVUb0NvbmZpZ1dpZmkoKVwiPumFjee9kUFQSTwvYnV0dG9uPlxuXHRcdFx0PGJ1dHRvbiB0eXBlPVwid2FyblwiIEBjbGljaz1cIm5hdmlnYXRlVG9WaWRlb1RhbGsoKVwiPuinhumikemAmuivnTwvYnV0dG9uPlxuXHRcdDwvdmlldz5cblx0PC92aWV3PlxuPC90ZW1wbGF0ZT5cblxuPHNjcmlwdD5cblx0Y29uc3QgcGx1Z2luID0gdW5pLnJlcXVpcmVOYXRpdmVQbHVnaW4oJ3N1cGVyX2V6dml6Jyk7XG5cdGV4cG9ydCBkZWZhdWx0IHtcblx0XHRkYXRhKCkge1xuXHRcdFx0cmV0dXJuIHtcblx0XHRcdFx0b3BlbkFwaVNlcnZlcjogJ2h0dHBzOi8vb3Blbi55czcuY29tJyxcblx0XHRcdFx0b3BlbkF1dGhBcGlTZXJ2ZXI6ICdodHRwczovL29wZW5hdXRoLnlzNy5jb20nLFxuXHRcdFx0XHRhcHBLZXk6ICcyNjgxMGYzYWNkNzk0ODYyYjYwOGI2Y2ZiYzMyYTZiOCcsICAgICAgLy8g5LuO6JCk55+z5byA5pS+5bmz5Y+w5o6n5Yi25Y+w6I635Y+WXG5cdFx0XHRcdGFjY2Vzc1Rva2VuOiAnYXQuMWlybHRicm9haW5lNXNpb2RjbXB2bWltM2M2eHhzbG0tMW93MTZ2cjJrcy0wcnUzZjJjLXZ3MWp5a2JjdycgIC8vIOS7juiQpOefs+W8gOaUvuW5s+WPsOaOp+WItuWPsOiOt+WPllxuXHRcdFx0fVxuXHRcdH0sXG5cdFx0b25MYXVuY2goKSB7XG5cdFx0XHR1bmkuYWRkTmF0aXZlUGx1Z2luKCdFenZpekFwcGxpY2F0aW9uJywgdGhpcy5vbk5hdGl2ZVBsdWdpblJlYWR5KTtcblx0XHR9LFxuXHRcdG9uTG9hZCgpIHtcblxuXHRcdH0sXG5cdFx0bWV0aG9kczoge1xuXHRcdFx0b25PcGVuQXBpU2VydmVyQ2hhbmdlKGUpIHtcblx0XHRcdFx0dGhpcy5vcGVuQXBpU2VydmVyID0gZS5kZXRhaWwudmFsdWU7XG5cdFx0XHR9LFxuXHRcdFx0b25PcGVuQXV0aEFwaVNlcnZlckNoYW5nZShlKSB7XG5cdFx0XHRcdHRoaXMub3BlbkF1dGhBcGlTZXJ2ZXIgPSBlLmRldGFpbC52YWx1ZTtcblx0XHRcdH0sXG5cdFx0XHRvbkFwcEtleUNoYW5nZShlKSB7XG5cdFx0XHRcdHRoaXMuYXBwS2V5ID0gZS5kZXRhaWwudmFsdWU7XG5cdFx0XHR9LFxuXHRcdFx0b25BY2Nlc3NUb2tlbkNoYW5nZShlKSB7XG5cdFx0XHRcdHRoaXMuYWNjZXNzVG9rZW4gPSBlLmRldGFpbC52YWx1ZTtcblx0XHRcdH0sXG5cdFx0XHRpc0luaXQoKSB7XG5cdFx0XHRcdGlmICh0aGlzLm9wZW5BcGlTZXJ2ZXIubGVuZ3RoID4gMCAmJiB0aGlzLm9wZW5BdXRoQXBpU2VydmVyLmxlbmd0aCA+IDAgJiYgdGhpcy5hcHBLZXkubGVuZ3RoID4gMCAmJiB0aGlzLmFjY2Vzc1Rva2VuLmxlbmd0aCA+IDApIHtcblx0XHRcdFx0XHRwbHVnaW4uaW5pdFVuaU9wZW5TREsoe1xuXHRcdFx0XHRcdFx0XCJvcGVuQXBpU2VydmVyXCI6IHRoaXMub3BlbkFwaVNlcnZlcixcblx0XHRcdFx0XHRcdFwib3BlbkF1dGhBcGlTZXJ2ZXJcIjogdGhpcy5vcGVuQXV0aEFwaVNlcnZlcixcblx0XHRcdFx0XHRcdFwiYXBwS2V5XCI6IHRoaXMuYXBwS2V5LFxuXHRcdFx0XHRcdFx0XCJhY2Nlc3NUb2tlblwiOiB0aGlzLmFjY2Vzc1Rva2VuXG5cdFx0XHRcdFx0fSk7XG5cdFx0XHRcdFx0cmV0dXJuIHRydWU7XG5cdFx0XHRcdH0gZWxzZSB7XG5cdFx0XHRcdFx0dW5pLnNob3dUb2FzdCh7XG5cdFx0XHRcdFx0XHR0aXRsZTogJ+ivt+ajgOafpeWIneWni+WMluWPguaVsCcsXG5cdFx0XHRcdFx0XHRpY29uOiAnbm9uZSdcblx0XHRcdFx0XHR9KTtcblx0XHRcdFx0XHRyZXR1cm4gZmFsc2U7XG5cdFx0XHRcdH1cblx0XHRcdH0sXG5cdFx0XHRuYXZpZ2F0ZVRvVmlkZW9QbGF5ZXIoKSB7XG5cdFx0XHRcdGlmICh0aGlzLmlzSW5pdCgpKSB7XG5cdFx0XHRcdFx0dW5pLm5hdmlnYXRlVG8oe1xuXHRcdFx0XHRcdFx0dXJsOiAnLi9zZGsnXG5cdFx0XHRcdFx0fSk7XG5cdFx0XHRcdH1cblx0XHRcdH0sXG5cdFx0XHRuYXZpZ2F0ZVRvQ29uZmlnV2lmaSgpIHtcblx0XHRcdFx0aWYgKHRoaXMuaXNJbml0KCkpIHtcblx0XHRcdFx0XHR1bmkubmF2aWdhdGVUbyh7XG5cdFx0XHRcdFx0XHR1cmw6ICcuLi9jb25maWdXaWZpL2luZGV4J1xuXHRcdFx0XHRcdH0pO1xuXHRcdFx0XHR9XG5cdFx0XHR9LFxuXHRcdFx0bmF2aWdhdGVUb1ZpZGVvVGFsaygpIHtcblx0XHRcdFx0dW5pLm5hdmlnYXRlVG8oe1xuXHRcdFx0XHRcdHVybDogJy4uL3ZpZGVvVGFsay9pbmRleCdcblx0XHRcdFx0fSk7XG5cdFx0XHR9LFxuXHRcdH1cblx0fVxuPC9zY3JpcHQ+XG5cbjxzdHlsZT5cblx0LmNvbnRlbnQge1xuXHRcdGRpc3BsYXk6IGZsZXg7XG5cdFx0ZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcblx0XHRqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcblx0XHRtYXJnaW46IDIwcHg7XG5cdH1cblxuXHQubG9nbyB7XG5cdFx0aGVpZ2h0OiAyMDBycHg7XG5cdFx0d2lkdGg6IDIwMHJweDtcblx0XHRtYXJnaW4tdG9wOiAyMDBycHg7XG5cdFx0bWFyZ2luLWxlZnQ6IGF1dG87XG5cdFx0bWFyZ2luLXJpZ2h0OiBhdXRvO1xuXHRcdG1hcmdpbi1ib3R0b206IDUwcnB4O1xuXHR9XG5cblx0LnRpdGxlIHtcblx0XHRmb250LXNpemU6IDM2cnB4O1xuXHRcdGNvbG9yOiAjOGY4Zjk0O1xuXHR9XG5cblx0LnVuaS10b2FzdCB7XG5cdFx0Zm9udC1zaXplOiAxOHB4O1xuXHRcdHBhZGRpbmc6IDEwcHg7XG5cdFx0d2lkdGg6IDIwMHB4O1xuXHRcdGhlaWdodDogMjAwcHg7XG5cdH1cbjwvc3R5bGU+XG4iXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///11\n");
 
 /***/ }),
 /* 12 */
@@ -414,9 +422,9 @@ function normalizeComponent (
 
 /***/ }),
 /* 13 */
-/*!*******************************************************************!*\
-  !*** E:/UniEzOpenSDK/demo/pages/configWifi/index.vue?mpType=page ***!
-  \*******************************************************************/
+/*!****************************************************************************************!*\
+  !*** E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages/configWifi/index.vue?mpType=page ***!
+  \****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -425,9 +433,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _ind
 
 /***/ }),
 /* 14 */
-/*!*************************************************************************************************!*\
-  !*** E:/UniEzOpenSDK/demo/pages/configWifi/index.vue?vue&type=template&id=e996d2fa&mpType=page ***!
-  \*************************************************************************************************/
+/*!**********************************************************************************************************************!*\
+  !*** E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages/configWifi/index.vue?vue&type=template&id=e996d2fa&mpType=page ***!
+  \**********************************************************************************************************************/
 /*! exports provided: render, staticRenderFns, recyclableRender, components */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -446,9 +454,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 /* 15 */
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--11-0!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/filter-modules-template.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!E:/UniEzOpenSDK/demo/pages/configWifi/index.vue?vue&type=template&id=e996d2fa&mpType=page ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--11-0!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/filter-modules-template.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages/configWifi/index.vue?vue&type=template&id=e996d2fa&mpType=page ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns, recyclableRender, components */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -508,9 +516,9 @@ render._withStripped = true
 
 /***/ }),
 /* 16 */
-/*!*******************************************************************************************!*\
-  !*** E:/UniEzOpenSDK/demo/pages/configWifi/index.vue?vue&type=script&lang=js&mpType=page ***!
-  \*******************************************************************************************/
+/*!****************************************************************************************************************!*\
+  !*** E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages/configWifi/index.vue?vue&type=script&lang=js&mpType=page ***!
+  \****************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -519,9 +527,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _D_H
 
 /***/ }),
 /* 17 */
-/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--7-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/using-components.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!E:/UniEzOpenSDK/demo/pages/configWifi/index.vue?vue&type=script&lang=js&mpType=page ***!
-  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--7-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/using-components.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/pages/configWifi/index.vue?vue&type=script&lang=js&mpType=page ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -624,9 +632,9 @@ function formatLog () {
 
 /***/ }),
 /* 19 */
-/*!************************************!*\
-  !*** E:/UniEzOpenSDK/demo/App.vue ***!
-  \************************************/
+/*!*********************************************************!*\
+  !*** E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/App.vue ***!
+  \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -635,9 +643,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _App
 
 /***/ }),
 /* 20 */
-/*!*************************************************************!*\
-  !*** E:/UniEzOpenSDK/demo/App.vue?vue&type=script&lang=js& ***!
-  \*************************************************************/
+/*!**********************************************************************************!*\
+  !*** E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/App.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -646,9 +654,9 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _D_H
 
 /***/ }),
 /* 21 */
-/*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--7-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/using-components.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!E:/UniEzOpenSDK/demo/App.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--7-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/using-components.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!E:/uniapp_sdk/branches/v0.0.2/uniapp_demo/App.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

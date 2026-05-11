@@ -148,8 +148,10 @@ typedef NS_OPTIONS(NSUInteger, EZPTZCommand) {
     EZPTZCommandRight           = 1 << 1, //向右旋转
     EZPTZCommandUp              = 1 << 2, //向上旋转
     EZPTZCommandDown            = 1 << 3, //向下旋转
-    EZPTZCommandZoomIn          = 1 << 4, //镜头拉进
+    EZPTZCommandZoomIn          = 1 << 4, //镜头拉近
     EZPTZCommandZoomOut         = 1 << 5, //镜头拉远
+    EZPTZCommandFocusNear       = 1 << 6, //焦距调近
+    EZPTZCommandFocusFar        = 1 << 7, //焦距调远
 };
 
 /*
@@ -195,6 +197,13 @@ typedef NS_ENUM(NSInteger, EZDefenceStatus) {
     EZDefenceStatusOuter          = 16, //A1外出模式
 };
 
+/* 视频质量 */
+typedef NS_ENUM(NSInteger, EZVideoQualityType) {
+    EZVideoQualityTypeNone                = 0,  //默认值
+    EZVideoQualityTypePerformancePriority = 1,  //性能优先
+    EZVideoQualityTypeQualityPriority     = 2   //质量优先
+};
+
 /* 通道清晰度，请注意不是所有设备都有这些清晰度的，请根据实际场景使用 */
 typedef NS_ENUM(NSInteger, EZVideoLevelType) {
     EZVideoLevelLow       = 0,  //流畅
@@ -223,6 +232,12 @@ typedef NS_ENUM(NSUInteger, EZVideoRecordTypeEx) {
     EZVideoRecordTypeExComPressAuTo,    // 自动浓缩录像
     EZVideoRecordTypeExComPressCMR,     // 定时浓缩录像
     EZVideoRecordTypeExComPressManual   // 手动浓缩录像
+};
+
+// 类型
+typedef NS_ENUM(NSUInteger, EZVideoRecordLocation) {
+    EZVideoRecordLocationLocal = 1, // 本地录像检索
+    EZVideoRecordLocationCVR        // CVR中心录像检索
 };
 
 /* 云存储录像类型 */
@@ -266,9 +281,26 @@ typedef NS_ENUM(NSInteger, EZVoiceChangeType) {
     EZVoiceChangeTypeClown = 7   // 小丑音
 };
 
-/* 权限类型 */
-static NSString * const EZPermisionTypeReal = @"Real";
-static NSString * const EZPermisionTypeReplay = @"Replay";
+// 客户端/设备端带宽检测类型
+typedef NS_ENUM(NSUInteger, EZBWCheckType) {
+    EZBWCheckClientUpward = 1 << 0,  // 客户端上行
+    EZBWCheckClientDownward = 1 << 1 // 客户端下行
+};
+
+// 播放画面旋转角度
+typedef NS_ENUM(NSUInteger, EZPlayerViewRotationAngle) {
+    EZPlayerViewRotationAngle0 = 0,     // 默认画面，未旋转
+    EZPlayerViewRotationAngle90 = 90,   // 旋转90°
+    EZPlayerViewRotationAngle180 = 180, // 旋转180°
+    EZPlayerViewRotationAngle270 = 270  // 旋转270°
+};
+
+// 平滑播放模式
+typedef NS_ENUM(NSUInteger, EZSmoothPlayMode) {
+    EZSmoothPlayModeAutoAdjustLatency = 0,   // 自动调节时延模式
+    EZSmoothPlayModeAutoIncrementalLatency,  // 自动递增时延模式
+    EZSmoothPlayModeStaticLatency            // 固定时延模式
+};
 
 /// 开放平台常量类
 @interface EZConstants : NSObject
