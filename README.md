@@ -10,6 +10,8 @@ UniEzOpenSDK基于萤石云开放平台原生APP SDK，封装为uniapp插件，�
 
 UniEzOpenSDK包含安卓 / iOS系统的原生APP插件
 
+> **ERTC 视频通话（含推流分辨率设置）**：本 README 说明的是直播预览与配网能力。萤石 S10 等设备的 ERTC 视频通话接口（原生模块 `super_ezviz_videotalk`，含 `setVideoEncoderParam` 的 `videoResolution` 参数与全量分辨率清单）请参见《萤石S10设备呼叫uniapp插件使用说明》。
+
 ## 2、插件使用
 
 ### 2.1 项目集成

@@ -182,6 +182,8 @@ const videoTalk = uni.requireNativePlugin('super_ezviz_videotalk');
 | options.appId | String | 是 | ERTC 项目 ID |
 | options.appKey | String | 是 | 萤石开放平台 AppKey |
 | options.accessToken | String | 是 | 萤石开放平台 AccessToken |
+| options.openApiServer | String | 否 | 服务地址，用于切换测试/生产环境；不传默认使用生产 `https://open.ys7.com` |
+| options.openAuthApiServer | String | 否 | auth 认证地址；不传默认使用生产 `https://openauth.ys7.com` |
 
 ```javascript
 videoTalk.initErtcEngine({
@@ -236,19 +238,67 @@ videoTalk.registerEventListener((event) => {
 
 #### setVideoEncoderParam(options)
 
-设置视频编码参数。建议在 `initErtcEngine` 成功后、`enterRoom` 之前调用。
+设置视频编码参数。建议在 `initErtcEngine` 成功后、`enterRoom` 之前调用（须在发起/接听通话前设置方可生效，调用语义不变）。
 
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| options.width | Number | 否 | 视频宽度，默认 640 |
-| options.height | Number | 否 | 视频高度，默认 480 |
+| options.videoResolution | String | 否 | 期望推流分辨率，如 `"480x270"`；命中下方分辨率清单时**最高优先级**生效，未传或未命中则回退 width/height 换算 |
+| options.width | Number | 否 | 视频宽度，默认 640（仅在 videoResolution 未命中时用于换算） |
+| options.height | Number | 否 | 视频高度，默认 480（仅在 videoResolution 未命中时用于换算） |
 | options.fps | Number | 否 | 帧率，默认 15 |
 | options.bitrate | Number | 否 | 码率（bps），默认 512000 |
+| options.resMode | Number | 否 | 横竖屏模式（数值，双端一致）：`0` 为横屏（默认），`1` 为竖屏（SDK 内部交换宽高）。iOS 仅识别数字；Android 兼容 `"portrait"`/`"landscape"` 字符串，但**双端统一建议传数字 `0`/`1`**。缺省或非法值静默回退横屏 |
+
+**分辨率解析优先级（iOS / Android 双端一致）：**
+
+1. `videoResolution` 命中清单 → 直接生效（来源 `FROM_VIDEO_RESOLUTION`）
+2. 未传或未命中 → `width`/`height` 就近换算到最接近的预设分辨率（来源 `FROM_WIDTH_HEIGHT`）
+3. 均未提供 → 默认 640×480（来源 `FROM_DEFAULT`）
+
+> 解析失败（格式非法、不在清单内）会**静默回退**，不抛异常、不中断通话，并输出 `生效分辨率=WxH, 来源=...` 日志便于排查；`fps`/`bitrate` 逻辑不受影响。
+
+**videoResolution 格式：** 提取字符串中前两个连续数字作为宽、高，分隔符不限。以下写法均解析为 640×480：`"640x480"`、`"640X480"`、`"640*480"`、`"640_480"`、`"640 480"`、`"640-480"`。
+
+**支持的分辨率清单（共 20 项，需与设备/账号能力匹配）：**
+
+| 宽高比 | 分辨率 |
+|--------|--------|
+| 1:1 | 120×120、160×160、270×270、480×480 |
+| 4:3 | 160×120、240×180、280×210、320×240、400×300、480×360、640×480、960×720 |
+| 16:9 | 160×90、256×144、320×180、**480×270**、640×360、960×540、1280×720（720P）、1920×1080（1080P） |
+
+> `videoResolution` 的宽高需与清单某项**完全相等**才命中（不做就近取整）；不在清单内（如 `"500x500"`）则回退 width/height 换算。
+
+**横竖屏（resMode）说明：**
+
+上方分辨率清单均为**横向**（宽 ≥ 高）。`resMode` 只决定编码方向，不改变分辨率档位的选择：
+
+- `resMode: 0`（默认，横屏）：按清单原始 宽×高 编码，如 `480×270`。
+- `resMode: 1`（竖屏）：SDK 内部**交换宽高**，如 `480×270` 实际编码为 `270×480`。
+
+> 双端口径一致：iOS 仅识别数字 `0`/`1`；Android 额外兼容 `"landscape"`/`"portrait"` 字符串，但为保证 iOS/Android 表现一致，**统一传数字 `0`/`1`**。
 
 ```javascript
+// 方式一：字符串精确指定分辨率（推荐，命中清单即精确生效）
+videoTalk.setVideoEncoderParam({
+  videoResolution: "480x270",
+  resMode: 0, // 横竖屏：0=横屏(默认) / 1=竖屏（数值，iOS/Android 一致）
+  fps: 15,
+  bitrate: 512000
+});
+
+// 方式二：不传 videoResolution，走 width/height 就近换算
 videoTalk.setVideoEncoderParam({
   width: 1280,
   height: 720,
+  fps: 15,
+  bitrate: 512000
+});
+
+// 方式三：竖屏推流（480×270 命中清单，resMode=1 后实际编码 270×480）
+videoTalk.setVideoEncoderParam({
+  videoResolution: "480x270",
+  resMode: 1, // 1=竖屏
   fps: 15,
   bitrate: 512000
 });
