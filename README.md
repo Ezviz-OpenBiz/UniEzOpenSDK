@@ -77,7 +77,9 @@ videoPlayer.createPlayer(this.deviceSerial, this.channelNo, this.validCode, (res
 
 | 序号 | API | 名称 | 入参 | 返回结果 |
 | - | - | - | - | - |
-| initUniOpenSDK | 初始化SDK | option {<br/>&nbsp;&nbsp;&nbsp;&nbsp;openApiServer 服务地址（公有云使用https://open.ys7.com）<br/>&nbsp;&nbsp;&nbsp;&nbsp;openAuthApiServer  auth地址（公有云使用https://openauth.ys7.com）<br/>&nbsp;&nbsp;&nbsp;&nbsp;appKey 萤石开放平台提供的 appkey<br/>&nbsp;&nbsp;&nbsp;&nbsp;accessToken 萤石开放平台提供的 accessToken<br/>}<br/>callback 回调 | success<br/>code<br/>msg |
+| initUniOpenSDK | 初始化SDK | option {<br/>&nbsp;&nbsp;&nbsp;&nbsp;openApiServer 服务地址（公有云使用https://open.ys7.com）<br/>&nbsp;&nbsp;&nbsp;&nbsp;openAuthApiServer  auth地址（公有云使用https://openauth.ys7.com）<br/>&nbsp;&nbsp;&nbsp;&nbsp;appKey 萤石开放平台提供的 appkey<br/>&nbsp;&nbsp;&nbsp;&nbsp;accessToken 萤石开放平台提供的 accessToken<br/>&nbsp;&nbsp;&nbsp;&nbsp;useTKToken 是否启用小权限TKToken模式（可选，默认false）<br/>&nbsp;&nbsp;&nbsp;&nbsp;httpToken 小权限模式下的httpToken（useTKToken为true时必填）<br/>}<br/>callback 回调 | success<br/>code<br/>msg |
+| setHttpToken | 设置/刷新httpToken | token httpToken字符串<br/>callback 回调 | success<br/>code<br/>msg |
+| setDeviceToken | 设置设备Token | option {<br/>&nbsp;&nbsp;&nbsp;&nbsp;deviceSerial 设备序列号（必填）<br/>&nbsp;&nbsp;&nbsp;&nbsp;channelNo 通道号（传则为通道级，不传则为设备级）<br/>&nbsp;&nbsp;&nbsp;&nbsp;deviceToken 设备级token（设备级时必填）<br/>&nbsp;&nbsp;&nbsp;&nbsp;deviceGlobalToken 通道级global token（通道级时必填）<br/>&nbsp;&nbsp;&nbsp;&nbsp;deviceVideoToken 通道级video token（通道级时必填）<br/>}<br/>callback 回调 | success<br/>code<br/>msg |
 | probeDeviceInfo | 【配网】查询设备信息 | deviceSerial 设备序列号<br/>deviceType 设备类型<br/>deviceVerifyCode 设备验证码<br/> | success<br/>code<br/>msg<br/>data 设备 HotSpot 类别 |
 | startAPConfigWifiWithSsid | 【配网】开始AP配置 | wifiSsid WiFi名称<br/>wifiPwd WiFi密码<br/>deviceSerial 设备序列号<br/>deviceVerifyCode 设备验证码<br/>deviceHotspotName 设备热点名称（HotSpot前缀_设备序列号）<br/>deviceHotspotPwd 设备热点密码（HotSpot前缀_设备验证码）<br/>autoConnectToDeviceHotSpot 自动连接热点<br/>callback 回调 | success<br/>code<br/>msg |
 | addDevice | 【配网】添加设备 | deviceSerial 设备序列号<br/>deviceVerifyCode 设备验证码<br/>callback 回调<br/> | success<br/>code<br/>msg |
@@ -87,27 +89,28 @@ videoPlayer.createPlayer(this.deviceSerial, this.channelNo, this.validCode, (res
 | 序号  | API                   | 名称           | 入参                                                                                                                                           | 返回结果                           |
 | --- | --------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | 1   | createPlayer          | 初始化播放器       | deviceSerial 设备序列号<br>channelNo 通道号<br>verifyCode 验证码<br>callback 回调                                                                         | code<br>msg                    |
-| 2   | startRealPlay         | 开始预览播放       | callback 回调                                                                                                                                  | code<br>msg                    |
-| 3   | stopRealPlay          | 结束预览播放       | callback 回调                                                                                                                                  | code<br>msg                    |
-| 4   | openSound             | 开启声音         |                                                                                                                                              |                                |
-| 5   | closeSound            | 关闭声音         |                                                                                                                                              |                                |
-| 6   | startTalk             | 开启对讲         | isDeviceTalkBack 是否为ipc设备对讲<br>当前仅支持全双工模式对讲                                                                                                  |                                |
-| 7   | stopTalk              | 结束对讲         |                                                                                                                                              |                                |
-| 8   | setVoiceTalkStatus    | 半双工对讲-切换对讲模式 | flag 对讲方向，true：手机端听-设备端说，false：手机端说-设备端听<br>默认为手机端听-设备端说                                                                                     |                                |
-| 9   | changeVideoLevel      | 切换清晰度        | level 清晰度，0：流畅，1：均衡，2：高清，3：超清                                                                                                                |                                |
-| 10  | startQueryRecordFiles | 查询录像片段       | startDate 开始时间<br>stopDate 结束时间<br>recordMode 回放模式，0：云存储，2：本地SD卡<br>recordType 事件类型，all：全部，CMR：告警，event：事件<br>spaceId：云录制空间id<br>callback 回调 | code<br>msg<br>data 回放片段列表     |
-| 11  | playbackSeekTo        | 回放跳转至指定时间    | data 目标时间点<br>callback 回调                                                                                                                    | code<br>msg                    |
-| 12  | startPlayBack         | 开始回放播放       | file 回放文件（startQueryRecordFiles返回的片段列表中的单个元素）<br>recordMode 回放模式，0：云存储，2：本地SD卡<br>callback 回调                                                | code<br>msg                    |
-| 13  | stopPlayBack          | 停止回放         | callback 回调                                                                                                                                  | code<br>msg                    |
-| 14  | fullscreen            | 全屏           |                                                                                                                                              |                                |
-| 15  | exitFullscreen        | 退出全屏         |                                                                                                                                              |                                |
-| 16  | capturePicture        | 截图           | fileName 文件名称（默认为时间戳）<br>savePath 文件保存路径（默认为APP所在位置的sandbox）<br>callback 回调<br>download 是否保存图片至相册（不传或传true会在截图后自动保存至系统相册）                    | code<br>msg<br>data 图片base64数据 |
-| 17  | startRealPlayRecord   | 开始录制         | callback 回调                                                                                                                                  | code<br>msg                    |
-| 18  | stopRealPlayRecord    | 结束录制         | callback 回调                                                                                                                                  | code<br>msg                    |
-| 19  | ptzOption             | 云台操作         | command 方向，0：左，1：右，2：上，3：下，8：物理放大，9：物理缩小<br>action 指令，START开始转动，STOP停止转动                                                                     |                                |
-| 20  | changePlayBackSpeed   | 倍速回放         | speed 回放速度，1：1倍速，2：二倍速，3：0.5倍速，4：4倍速，8：8倍速，16：16倍速                                                                                           |                                |
-| 21  | getStreamFlow         | 获取流量数据       | callback 回调                                                                                                                                  | code<br>data 累计消耗流量            |
-| 22  | release               | 销毁播放器        | callback 回调                                                                                                                                  | res销毁结果                        |
+| 2   | setStreamToken        | 设置取流Token    | option {<br>&nbsp;&nbsp;previewToken 预览取流token（可选）<br>&nbsp;&nbsp;talkToken 对讲取流token（可选）<br>&nbsp;&nbsp;playbackToken SD卡回放取流token（可选）<br>} | 无                              |
+| 3   | startRealPlay         | 开始预览播放       | callback 回调                                                                                                                                  | code<br>msg                    |
+| 4   | stopRealPlay          | 结束预览播放       | callback 回调                                                                                                                                  | code<br>msg                    |
+| 5   | openSound             | 开启声音         |                                                                                                                                              |                                |
+| 6   | closeSound            | 关闭声音         |                                                                                                                                              |                                |
+| 7   | startTalk             | 开启对讲         | isDeviceTalkBack 是否为ipc设备对讲<br>当前仅支持全双工模式对讲                                                                                                  |                                |
+| 8   | stopTalk              | 结束对讲         |                                                                                                                                              |                                |
+| 9   | setVoiceTalkStatus    | 半双工对讲-切换对讲模式 | flag 对讲方向，true：手机端听-设备端说，false：手机端说-设备端听<br>默认为手机端听-设备端说                                                                                     |                                |
+| 10  | changeVideoLevel      | 切换清晰度        | level 清晰度，0：流畅，1：均衡，2：高清，3：超清                                                                                                                |                                |
+| 11  | startQueryRecordFiles | 查询录像片段       | startDate 开始时间<br>stopDate 结束时间<br>recordMode 回放模式，0：云存储，2：本地SD卡<br>recordType 事件类型，all：全部，CMR：告警，event：事件<br>spaceId：云录制空间id<br>callback 回调 | code<br>msg<br>data 回放片段列表     |
+| 12  | playbackSeekTo        | 回放跳转至指定时间    | data 目标时间点<br>callback 回调                                                                                                                    | code<br>msg                    |
+| 13  | startPlayBack         | 开始回放播放       | file 回放文件（startQueryRecordFiles返回的片段列表中的单个元素）<br>recordMode 回放模式，0：云存储，2：本地SD卡<br>callback 回调                                                | code<br>msg                    |
+| 14  | stopPlayBack          | 停止回放         | callback 回调                                                                                                                                  | code<br>msg                    |
+| 15  | fullscreen            | 全屏           |                                                                                                                                              |                                |
+| 16  | exitFullscreen        | 退出全屏         |                                                                                                                                              |                                |
+| 17  | capturePicture        | 截图           | fileName 文件名称（默认为时间戳）<br>savePath 文件保存路径（默认为APP所在位置的sandbox）<br>callback 回调<br>download 是否保存图片至相册（不传或传true会在截图后自动保存至系统相册）                    | code<br>msg<br>data 图片base64数据 |
+| 18  | startRealPlayRecord   | 开始录制         | callback 回调                                                                                                                                  | code<br>msg                    |
+| 19  | stopRealPlayRecord    | 结束录制         | callback 回调                                                                                                                                  | code<br>msg                    |
+| 20  | ptzOption             | 云台操作         | command 方向，0：左，1：右，2：上，3：下，8：物理放大，9：物理缩小<br>action 指令，START开始转动，STOP停止转动                                                                     |                                |
+| 21  | changePlayBackSpeed   | 倍速回放         | speed 回放速度，1：1倍速，2：二倍速，3：0.5倍速，4：4倍速，8：8倍速，16：16倍速                                                                                           |                                |
+| 22  | getStreamFlow         | 获取流量数据       | callback 回调                                                                                                                                  | code<br>data 累计消耗流量            |
+| 23  | release               | 销毁播放器        | callback 回调                                                                                                                                  | res销毁结果                        |
 
 ## 4、消息回调
 
@@ -161,3 +164,84 @@ globalEvent.addEventListener('onMessage', (e) => {
     }
 });
 ```
+
+## 5、小权限 TKToken 模式
+
+### 5.1 注意事项
+
+1. **两种模式互斥**：`initUniOpenSDK` 传入 `useTKToken: true` 后，`setAccessToken` 被 SDK 禁用，两种模式不可混用
+2. **不传则兼容**：不传 `useTKToken` 或传 `false`，完全走原有大 Token 逻辑，对现有用户零影响
+3. **切换需重启**：运行时不能动态切换授权模式，切换需重启应用
+4. **后端签发**：所有小权限 token 由业务后端调用萤石开放平台接口签发，客户端不能自行生成
+
+### 5.2 各场景需要的 Token
+
+**所有场景都需要先设置 httpToken**（通过 `initUniOpenSDK` 传入）。
+
+#### 视频组件（预览/对讲/回放/清晰度/云台等）
+
+| 设置时机 | 需要的 Token | 设置方式 |
+|---------|-------------|---------|
+| 初始化时 | httpToken | `initUniOpenSDK({useTKToken:true, httpToken})` |
+| 进入设备页面，调用 API 之前一次性设好 | deviceGlobalToken + deviceVideoToken | `plugin.setDeviceToken({deviceSerial, channelNo, deviceGlobalToken, deviceVideoToken})` |
+| 取流操作前一次性设好 | previewToken + talkToken + playbackToken | `player.setStreamToken({previewToken, talkToken, playbackToken})` |
+
+调用顺序：
+
+```
+initUniOpenSDK({useTKToken:true, httpToken})
+    ↓
+plugin.setDeviceToken({deviceSerial, channelNo, deviceGlobalToken, deviceVideoToken})
+    ↓
+player.setStreamToken({previewToken, talkToken, playbackToken})
+    ↓
+createPlayer → startRealPlay / startTalk / startPlayBack / changeVideoLevel...
+```
+
+> **说明**：`setDeviceToken` 和 `setStreamToken` 需在调用具体业务 API 之前一次性设置好。`setStreamToken` 可只传部分字段，未传的保持之前的值不变。云存储回放走 SDK 内部 ticket 认证，无需设置 streamToken。
+
+#### ERTC 视频通话
+
+| 设置时机 | 需要的 Token | 设置方式 |
+|---------|-------------|---------|
+| 初始化时 | httpToken | `initUniOpenSDK({useTKToken:true, httpToken})` |
+| ERTC 通话前 | deviceGlobalToken + deviceVideoToken | `plugin.setDeviceToken({deviceSerial, channelNo, deviceGlobalToken, deviceVideoToken})` |
+| 进入房间时 | ertcClientToken + ertcDeviceToken | `enterRoom({ertcClientToken, ertcDeviceToken, ...})`（ERTC 独立体系，非 TKToken） |
+
+调用顺序：
+
+```
+initUniOpenSDK({useTKToken:true, httpToken})
+    ↓
+plugin.setDeviceToken({deviceSerial, channelNo, deviceGlobalToken, deviceVideoToken})
+    ↓
+initErtcEngine({appId, appKey})          ← 无需 accessToken
+    ↓
+enterRoom({ertcClientToken, ertcDeviceToken, ...})
+    ↓ 进入房间后自动 inviteDeviceEnterMeeting（内部使用 deviceGlobalToken + deviceVideoToken 鉴权）
+```
+
+> **说明**：`initErtcEngine` 本身不依赖任何 TKToken，但 `inviteDeviceEnterMeeting`（邀请设备入会）底层 HTTP 请求含设备序列号+通道号，SDK 内部会路由到 deviceGlobalToken + deviceVideoToken，所以必须提前通过 `plugin.setDeviceToken` 设置。
+
+### 5.3 小权限 Token 如何生成
+
+业务后端使用萤石开放平台 Java SDK 生成各分片 token，各 Generator 类与前端接口对应关系：
+
+| 前端分片 | 后端 SDK 类 | 关键参数 |
+|---------|-----------|---------|
+| httpToken | `NonDeviceOpsTokenGenerator` | urlPattern=`/**` |
+| deviceGlobalToken | `DeviceGeneralTokenGenerator` | resourceCategory=`global`，channelNo=具体通道号 |
+| deviceVideoToken | `DeviceGeneralTokenGenerator` | resourceCategory=`video`，channelNo=具体通道号 |
+| previewToken | `StreamTokenGenerator` | actionType=`PREVIEW` |
+| talkToken | `StreamTokenGenerator` | actionType=`TALK`，channelNo=`0`（IPC设备） |
+| playbackToken | `StreamTokenGenerator` | actionType=`PLAYBACK` |
+
+完整参数说明及生成示例请参考 [小权限token生成文档](小权限token生成文档.md)。
+
+### 5.4 新增 API 汇总
+
+| API | 所属 | 入参 | 说明 |
+|-----|------|------|------|
+| `setHttpToken` | Module (plugin) | token, callback | 设置/刷新非设备类 httpToken，首次设置和过期刷新都调用此方法 |
+| `setDeviceToken` | Module (plugin) | {deviceSerial, channelNo?, deviceToken?, deviceGlobalToken?, deviceVideoToken?}, callback | 设置设备级或通道级 token |
+| `setStreamToken` | Component (player) | {previewToken?, talkToken?, playbackToken?} | 设置取流 token，一次传入三种场景，播放器按操作自动选用 |

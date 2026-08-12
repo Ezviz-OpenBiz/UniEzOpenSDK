@@ -700,6 +700,8 @@ export default {
 
 7. **iOS 真机调试：** iOS 端需要有效的开发者证书和 Provisioning Profile，且需在 Xcode 中配置 Hotspot Configuration 能力。
 
+8. **小权限 TKToken 模式：** 若使用小权限模式（`initUniOpenSDK` 传 `useTKToken:true`），在发起 ERTC 通话前必须通过 `plugin.setDeviceToken` 设置好 `deviceGlobalToken` + `deviceVideoToken`，否则 `inviteDeviceEnterMeeting` 会鉴权失败。详见 §十一。
+
 ---
 
 ## 十、常见问题
@@ -718,3 +720,66 @@ A: 确认插件目录中包含完整的 `EZOpenSDKFramework.framework` 和 ERTC 
 
 **Q: Android 端运行时崩溃？**  
 A: 检查是否配置了所有必要权限，确认 minSdkVersion ≥ 21，且 ABI 过滤包含目标设备架构。
+
+---
+
+## 十一、小权限 TKToken 模式下使用 ERTC
+
+### 11.1 注意事项
+
+1. **两种模式互斥**：`initUniOpenSDK` 传 `useTKToken: true` 后，`setAccessToken` 被 SDK 禁用，不可混用；不传则走原有大 Token 逻辑
+2. **ERTC 引擎初始化不依赖 TKToken**：`initErtcEngine` 本身无需任何小权限 token 即可初始化
+3. **邀请设备入会需要 deviceGlobalToken + deviceVideoToken**：`inviteDeviceEnterMeeting` 底层是 EZOpenSDK HTTP 请求（含设备序列号+通道号），SDK 内部会路由到 deviceGlobalToken + deviceVideoToken，必须提前设置
+4. **切换模式需重启应用**，运行时不能动态切换
+
+### 11.2 ERTC 通话前需设置的 Token
+
+| 设置时机 | 需要的 Token | 设置方式 | 说明 |
+|---------|-------------|---------|------|
+| SDK 初始化时 | httpToken | `initUniOpenSDK({useTKToken:true, httpToken})` | 非设备类接口鉴权 |
+| ERTC 通话前 | deviceGlobalToken + deviceVideoToken | `plugin.setDeviceToken({deviceSerial, channelNo, deviceGlobalToken, deviceVideoToken})` | inviteDeviceEnterMeeting 内部使用 |
+| 进入房间时 | ertcClientToken + ertcDeviceToken | `enterRoom({ertcClientToken, ertcDeviceToken, ...})` | ERTC 独立体系，非 TKToken |
+
+**调用时序：**
+
+```
+initUniOpenSDK({useTKToken:true, httpToken, appKey, ...})
+    ↓
+plugin.setDeviceToken({deviceSerial, channelNo, deviceGlobalToken, deviceVideoToken})
+    ↓
+initErtcEngine({appId, appKey})              ← 小权限模式下无需传 accessToken
+    ↓
+enterRoom({ertcClientToken, ertcDeviceToken, deviceSerial, channelNo, isClientCall:true})
+    ↓ 进入房间成功后自动调用 inviteDeviceEnterMeeting
+      （内部使用已设置的 deviceGlobalToken + deviceVideoToken 完成 HTTP 鉴权）
+```
+
+### 11.3 Token 生成说明
+
+ERTC 视频通话场景共涉及 5 个 token，分属两个独立体系：
+
+**TKToken 体系**（萤石开放平台 Token 签发接口生成）：
+
+| Token | 后端 SDK 类 | 关键参数 |
+|-------|-----------|---------|
+| httpToken | `NonDeviceOpsTokenGenerator` | urlPattern=`/**` |
+| deviceGlobalToken | `DeviceGeneralTokenGenerator` | resourceCategory=`global`，channelNo=具体通道号 |
+| deviceVideoToken | `DeviceGeneralTokenGenerator` | resourceCategory=`video`，channelNo=具体通道号 |
+
+**ERTC 体系**（ERTC Token 生成接口生成）：
+
+| Token | 获取方式 | 说明 |
+|-------|---------|------|
+| ertcClientToken | 服务端调用 ERTC Token 生成接口 | 绑定 roomId + userId |
+| ertcDeviceToken | 服务端调用 ERTC Token 生成接口 | 绑定 roomId + 设备 userId |
+
+完整的 TKToken 各分片生成参数请参考 [小权限token生成文档](小权限token生成文档.md)。
+
+### 11.4 新增 API
+
+| API | 所属模块 | 入参 | 说明 |
+|-----|---------|------|------|
+| `setHttpToken` | super_ezviz (Module) | token, callback | 设置/刷新 httpToken |
+| `setDeviceToken` | super_ezviz (Module) | {deviceSerial, channelNo?, deviceToken?, deviceGlobalToken?, deviceVideoToken?}, callback | 设置设备级或通道级 token，ERTC 场景需传通道级 |
+
+> **注意**：ERTC 场景不涉及 `setStreamToken`（取流 token），取流 token 仅用于视频组件的预览/对讲/回放。
