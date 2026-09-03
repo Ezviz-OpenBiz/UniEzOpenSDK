@@ -87,78 +87,63 @@ videoPlayer.createPlayer(this.deviceSerial, this.channelNo, this.validCode, (res
 | addDevice | 【配网】添加设备 | deviceSerial 设备序列号<br/>deviceVerifyCode 设备验证码<br/>callback 回调<br/> | success<br/>code<br/>msg |
 | stopAPConfigWifi | 【配网】停止AP配置 | | |
 
-### 3.2、播放组件API
-| 序号  | API                   | 名称           | 入参                                                                                                                                           | 返回结果                           |
-| --- | --------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| 1   | createPlayer          | 初始化播放器       | deviceSerial 设备序列号<br>channelNo 通道号<br>verifyCode 验证码<br>callback 回调                                                                         | code<br>msg                    |
-| 2   | setStreamToken        | 设置取流Token    | option {<br>&nbsp;&nbsp;previewToken 预览取流token（可选）<br>&nbsp;&nbsp;talkToken 对讲取流token（可选）<br>&nbsp;&nbsp;playbackToken SD卡回放取流token（可选）<br>} | 无                              |
-| 3   | startRealPlay         | 开始预览播放       | callback 回调                                                                                                                                  | code<br>msg                    |
-| 4   | stopRealPlay          | 结束预览播放       | callback 回调                                                                                                                                  | code<br>msg                    |
-| 5   | openSound             | 开启声音         |                                                                                                                                              |                                |
-| 6   | closeSound            | 关闭声音         |                                                                                                                                              |                                |
-| 7   | startTalk             | 开启对讲         | isDeviceTalkBack 是否为ipc设备对讲<br>当前仅支持全双工模式对讲                                                                                                  |                                |
-| 8   | stopTalk              | 结束对讲         |                                                                                                                                              |                                |
-| 9   | setVoiceTalkStatus    | 半双工对讲-切换对讲模式 | flag 对讲方向，true：手机端听-设备端说，false：手机端说-设备端听<br>默认为手机端听-设备端说                                                                                     |                                |
-| 10  | changeVideoLevel      | 切换清晰度        | level 清晰度，0：流畅，1：均衡，2：高清，3：超清                                                                                                                |                                |
-| 11  | startQueryRecordFiles | 查询录像片段       | startDate 开始时间<br>stopDate 结束时间<br>recordMode 回放模式，0：云存储，2：本地SD卡<br>recordType 事件类型，all：全部，CMR：告警，event：事件<br>spaceId：云录制空间id<br>callback 回调 | code<br>msg<br>data 回放片段列表     |
-| 12  | playbackSeekTo        | 回放跳转至指定时间    | data 目标时间点<br>callback 回调                                                                                                                    | code<br>msg                    |
-| 13  | startPlayBack         | 开始回放播放       | file 回放文件（startQueryRecordFiles返回的片段列表中的单个元素）<br>recordMode 回放模式，0：云存储，2：本地SD卡<br>callback 回调                                                | code<br>msg                    |
-| 14  | stopPlayBack          | 停止回放         | callback 回调                                                                                                                                  | code<br>msg                    |
-| 15  | fullscreen            | 全屏           |                                                                                                                                              |                                |
-| 16  | exitFullscreen        | 退出全屏         |                                                                                                                                              |                                |
-| 17  | capturePicture        | 截图           | fileName 文件名称（默认为时间戳）<br>savePath 文件保存路径（默认为APP所在位置的sandbox）<br>callback 回调<br>download 是否保存图片至相册（不传或传true会在截图后自动保存至系统相册）                    | code<br>msg<br>data 图片base64数据 |
-| 18  | startRealPlayRecord   | 开始录制         | callback 回调                                                                                                                                  | code<br>msg                    |
-| 19  | stopRealPlayRecord    | 结束录制         | callback 回调                                                                                                                                  | code<br>msg                    |
-| 20  | ptzOption             | 云台操作         | command 方向，0：左，1：右，2：上，3：下，8：物理放大，9：物理缩小<br>action 指令，START开始转动，STOP停止转动                                                                     |                                |
-| 21  | changePlayBackSpeed   | 倍速回放         | speed 回放速度，1：1倍速，2：二倍速，3：0.5倍速，4：4倍速，8：8倍速，16：16倍速                                                                                           |                                |
-| 22  | getStreamFlow         | 获取流量数据       | callback 回调                                                                                                                                  | code<br>data 累计消耗流量            |
-| 23  | release               | 销毁播放器        | callback 回调                                                                                                                                  | res销毁结果                        |
+### 3.2、播放组件 API
+| 序号 | API | 名称 | 入参 | 返回结果 |
+| --- | --- | --- | --- | --- |
+| 1 | createPlayer | 初始化播放器 | deviceSerial 设备序列号<br>channelNo 通道号<br>verifyCode 验证码<br>callback 回调 | code<br>msg |
+| 2 | setStreamToken | 设置取流 Token | option {<br>&nbsp;&nbsp;previewToken 预览取流 token（可选）<br>&nbsp;&nbsp;talkToken 对讲取流 token（可选）<br>&nbsp;&nbsp;playbackToken SD 卡回放取流 token（可选）<br>} | 无 |
+| 3 | startRealPlay | 开始预览播放 | callback 回调 | code<br>msg |
+| 4 | stopRealPlay | 结束预览播放 | callback 回调 | code<br>msg |
+| 5 | openSound | 开启声音 | | |
+| 6 | closeSound | 关闭声音 | | |
+| 7 | startTalk | 开启对讲 | isDeviceTalkBack 是否为 IPC 设备对讲<br>当前仅支持全双工模式对讲 | |
+| 8 | stopTalk | 结束对讲 | | |
+| 9 | setVoiceTalkStatus | 半双工对讲-切换对讲模式 | flag 对讲方向，true：手机端听-设备端说，false：手机端说-设备端听<br>默认为手机端听-设备端说 | |
+| 10 | changeVideoLevel | 切换清晰度 | level 清晰度，0：流畅，1：均衡，2：高清，3：超清 | |
+| 11 | startQueryRecordFiles | 查询录像片段 | startDate 开始时间<br>stopDate 结束时间<br>recordMode 回放模式，0：云存储，2：本地 SD 卡<br>recordType 事件类型，all：全部，CMR：告警，event：事件<br>spaceId：云录制空间 ID<br>callback 回调 | code<br>msg<br>data 回放片段列表 |
+| 12 | playbackSeekTo | 回放跳转至指定时间 | data 目标时间点<br>callback 回调 | code<br>msg |
+| 13 | startPlayBack | 开始回放播放 | file 回放文件（startQueryRecordFiles 返回的片段列表中的单个元素）<br>recordMode 回放模式，0：云存储，2：本地 SD 卡<br>callback 回调 | code<br>msg |
+| 14 | stopPlayBack | 停止回放 | callback 回调 | code<br>msg |
+| 15 | fullscreen | 全屏 | | |
+| 16 | exitFullscreen | 退出全屏 | | |
+| 17 | capturePicture | 截图 | fileName 文件名称（默认为时间戳）<br>savePath 文件保存路径（可选）<br>callback 回调<br>download 是否保存至系统相册（不传或传 true 时保存） | code<br>msg<br>data：JPEG Data URI |
+| 18 | getOSDTime | 获取画面 OSD 时间（Android） | callback 回调 | code<br>msg：调用结果说明<br>data：`yyyy-MM-dd HH:mm:ss` |
+| 19 | startRealPlayRecord | 开始录制 | callback 回调 | code<br>msg |
+| 20 | stopRealPlayRecord | 结束录制 | callback 回调 | code<br>msg |
+| 21 | ptzOption | 云台操作 | command 方向，0：左，1：右，2：上，3：下，8：物理放大，9：物理缩小<br>action 指令，START 开始转动，STOP 停止转动 | |
+| 22 | changePlayBackSpeed | 倍速回放 | speed 回放速度，1：1 倍速，2：2 倍速，3：0.5 倍速，4：4 倍速，8：8 倍速，16：16 倍速 | |
+| 23 | getStreamFlow | 获取流量数据 | callback 回调 | code<br>data 累计消耗流量 |
+| 24 | release | 销毁播放器 | callback 回调 | res 销毁结果 |
+
+> Android 10 及以上截图保存默认使用 MediaStore 写入系统相册；Android 6 至 9 会在首次保存前申请存储权限。`capturePicture` 的 `data` 为可直接赋给图片组件 `src` 的 JPEG Data URI。
 
 ## 4、消息回调
 
-插件提供回调事件，在播放、对讲、操作云台时返回对应的执行结果。
+插件在播放、对讲、清晰度切换、云台和回放操作中通过全局 `onMessage` 事件返回结果。在页面适当的生命周期中监听该事件；无需调用组件私有回调接口。
 
-在页面的适当的时机监听“onMessage”事件，插件会在执行完成后通过该全局事件回调结果。
-
-具体使用方式可以参考demos。
-
-若有更多回调事件需求，可以通过GitHub issues向我们反馈。
+Android `1.0.11` 补充了回放开始、完成、停止、连接异常、超时和倍速降级事件；画面分辨率变化通过 `handleVideoSizeChange` 返回 `width`、`height` 和 `proportion`。
 
 ```js
 globalEvent.addEventListener('onMessage', (e) => {
-    console.log("onMessage=" + JSON.stringify(e));
+    console.log('onMessage=' + JSON.stringify(e));
     const messageKey = Object.keys(e)[0];
+
     switch (messageKey) {
-        case 'handlePlaySuccess': // 播放成功
-            // ...
-            break;
-
+        case 'handlePlaySuccess': // 预览或回放播放成功
         case 'handlePlayFail': // 播放失败
-            // ...
-            break;
-
         case 'handleTalkSuccess': // 对讲成功
-            // ...
-            break;
-
         case 'handleTalkFail': // 对讲失败
-            // ...
-            break;
-
-        case 'handleTalkStopSuccess': // 结束对讲
-            // ...
-            break;
-
-        case 'handleSetVideoModeSuccess': // 切换清晰度成功
-            // ...
-            break;
-
+        case 'handleTalkStopSuccess': // 对讲停止
+        case 'handleSetVideoModeSuccess': // 清晰度切换成功
         case 'handlePTZSuccess': // 云台操作成功
-            // ...
-            break;
-
         case 'handlePTZFail': // 云台操作失败
-            // ...
+        case 'handleVideoSizeChange': // 画面分辨率变化
+        case 'handlePlaybackFinish': // 回放片段播放完毕
+        case 'handlePlaybackStopSuccess': // 回放停止成功
+        case 'handlePlaybackConnectionException': // 回放连接异常
+        case 'handlePlaybackTimeout': // 回放取流超时
+        case 'handlePlaybackRateLower': // 回放倍速自动降低
+            // 根据 e[messageKey] 处理回调结果。
             break;
 
         default:

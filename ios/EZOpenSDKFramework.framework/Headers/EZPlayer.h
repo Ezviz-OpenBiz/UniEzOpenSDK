@@ -309,6 +309,9 @@ typedef NS_ENUM(NSInteger, EZPlaybackRate) {
 /**
  *  开始TTS对讲，异步接口，返回值只是表示操作成功，不代表对讲成功
  *  针对于NVR对讲使用
+ *
+ *  @param needVoiceChannel YES:与NVR设备绑定的IPC进行对讲 NO:与NVR设备对讲
+ *
  *  @return YES/NO
  */
 - (BOOL)startVoiceTalkNeedVoiceChannel:(BOOL)needVoiceChannel;
@@ -631,7 +634,7 @@ sd卡及云存储倍速回放接口（倍数后播放没有声音，这个是正
 - (void)setPlayerDisableP2P;
 
 /**
- * 是否开启自动清晰度网络检测开关；此api未调用时，不会回调以下消息 
+ * 是否开启自动清晰度网络检测开关，startRealPlay之前调用；此api未调用时，不会回调以下消息 
  * EZPlayer - EZMessageCode - PLAYER_VIDEO_LEVEL_AUTO_IMPROVE  网络好，会回调此消息，建议切换高一级清晰度
  * EZPlayer - EZMessageCode - PLAYER_VIDEO_LEVEL_AUTO_REDUCE    网络差，会回调此消息，建议切换低一级清晰度
  */
@@ -693,8 +696,8 @@ sd卡及云存储倍速回放接口（倍数后播放没有声音，这个是正
 - (void)enableSmoothPlay:(EZSmoothPlayMode)smoothPlayMode;
 
 /**
- * 开启纯音频播放，开启后不显示视频，仅播放音频
- * 在调用startPlayback之前设置生效
+ * 开启纯音频播放，开启后不显示视频，仅播放音频。非可视报警盒设备专用
+ * 在调用startPlayback之前设置生效，且需要在接收到PLAYER_PREPARED消息后开启播放器声音
  */
 - (void)enablePureAudio;
 
